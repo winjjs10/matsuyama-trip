@@ -83,7 +83,9 @@
   .frow{display:grid;grid-template-columns:1fr 1fr;gap:4px}
 
   /* 기타 비용 */
-  .erow{display:grid;grid-template-columns:1fr 110px auto;gap:6px;align-items:center;margin-bottom:6px}
+  .erow{display:grid;grid-template-columns:72px 1fr 94px auto;gap:6px;align-items:center;margin-bottom:6px}
+  .erow select{border:1px solid var(--line);border-radius:8px;padding:6px 4px;background:#fff;color:var(--text);font-size:12px;font-weight:600;font-family:inherit}
+  .erow select:focus{outline:none;border-color:var(--main)}
   .erow input[type=number]{text-align:right;font-weight:600;color:var(--main)}
   .erow button{border:none;background:transparent;color:#b3b8c4;cursor:pointer;padding:6px;border-radius:7px}
   .erow button:hover{color:var(--danger);background:#fff0f0}
@@ -160,11 +162,11 @@
     <div class="sum">
       <div><span>항공</span><b id="sumFlight"></b></div>
       <div><span>숙소</span><b id="sumHotel"></b></div>
-      <div><span>기타</span><b id="sumExtra"></b></div>
+      <div><span>기타 (합계)</span><b id="sumExtra"></b></div>
       <div class="tot"><span>총 합계</span><b id="sumAll"></b></div>
-      <div class="big"><span id="perLabel">1인당</span><span id="sumPer"></span></div>
+      <div id="sumMembers" style="display:grid;gap:6px"></div>
     </div>
-    <div class="hint">금액을 고치면 합계와 1인당 금액이 바로 바뀌어요. 1인당은 위 이름표 인원수로 나눠요. 도고칸은 USD 결제라 카드 환율에 따라 조금 달라질 수 있어요.</div>
+    <div class="hint">금액을 고치면 합계와 개인별 정산 금액이 바로 바뀌어요. 항공·숙소·공동 기타는 인원수로 나누고, 개인별 기타는 해당 사람 합계에만 더해져요. 도고칸은 USD 결제라 카드 환율에 따라 조금 달라질 수 있어요.</div>
   </div>
 
   <div class="card">
@@ -197,7 +199,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const KEY = "matsuyama-trip-v1";
+const KEY = "matsuyama-trip-v2";
 const uid = () => Math.random().toString(36).slice(2, 9);
 const I = (text, time = "", memo = "") => ({ id: uid(), time, text, memo, done: false });
 const fmt = n => Number(n || 0).toLocaleString("ko-KR");
@@ -456,38 +458,60 @@ $("hotels").addEventListener("input", e => {
 
 /* 기타 비용 */
 function renderExtras(){
-  $("extras").innerHTML = state.extras.length ? state.extras.map((x,i) => `
+  const opts = [["shared","공동"], ...state.members.map((m,idx) => [String(idx), m || `인원${idx+1}`])];
+  $("extras").innerHTML = state.extras.length ? state.extras.map((x,i) => {
+    const who = x.who ?? "shared";
+    return `
     <div class="erow" data-e="${i}">
-      <input type="text" data-ef="name" value="${esc(x.name)}" placeholder="항목 (예: 교통비)">
+      <select data-ef="who">
+        ${opts.map(([v,lbl]) => `<option value="${v}" ${who===v?"selected":""}>${esc(lbl)}</option>`).join("")}
+      </select>
+      <input type="text" data-ef="name" value="${esc(x.name)}" placeholder="항목 (예: 쇼핑, 식비)">
       <input type="number" data-ef="price" value="${x.price || ""}" inputmode="numeric" placeholder="금액">
       <button data-edel="${i}" title="삭제">✕</button>
-    </div>`).join("") : `<div class="hint" style="margin:0 0 8px">아직 항목이 없어요. 식비, 교통, 쇼핑 예산을 추가해 보세요.</div>`;
+    </div>`;
+  }).join("") : `<div class="hint" style="margin:0 0 8px">아직 항목이 없어요. 공동/개인별 식비, 교통, 쇼핑 예산을 추가해 보세요.</div>`;
 }
-$("extras").addEventListener("input", e => {
+function onExtraChange(e){
   const f = e.target.dataset.ef; if (!f) return;
   const i = +e.target.closest(".erow").dataset.e;
   state.extras[i][f] = f === "price" ? (+e.target.value || 0) : e.target.value;
   save(); updateSum();
-});
+}
+$("extras").addEventListener("input", onExtraChange);
+$("extras").addEventListener("change", onExtraChange);
 $("extras").addEventListener("click", e => {
   const b = e.target.closest("[data-edel]"); if (!b) return;
   state.extras.splice(+b.dataset.edel, 1); save(); renderExtras(); updateSum();
 });
-$("addExtra").onclick = () => { state.extras.push({ name: "", price: 0 }); save(); renderExtras(); updateSum(); };
+$("addExtra").onclick = () => { state.extras.push({ who: "shared", name: "", price: 0 }); save(); renderExtras(); updateSum(); };
 
 /* 예산 */
 function updateSum(){
   const hotel = state.hotels.reduce((a,h) => a + (+h.price || 0), 0);
   const flight = +state.flightPrice || 0;
-  const extra = state.extras.reduce((a,x) => a + (+x.price || 0), 0);
-  const total = hotel + flight + extra;
   const n = Math.max(state.members.length, 1);
+  let sharedExtra = 0;
+  const personalExtra = new Array(n).fill(0);
+  state.extras.forEach(x => {
+    const p = +x.price || 0;
+    const idx = (x.who != null && x.who !== "shared") ? +x.who : -1;
+    if (idx >= 0 && idx < n) personalExtra[idx] += p;
+    else sharedExtra += p;
+  });
+  const extra = sharedExtra + personalExtra.reduce((a,b) => a + b, 0);
+  const total = hotel + flight + extra;
   $("sumFlight").textContent = fmt(flight) + "원";
   $("sumHotel").textContent = fmt(hotel) + "원";
   $("sumExtra").textContent = fmt(extra) + "원";
   $("sumAll").textContent = fmt(total) + "원";
-  $("perLabel").textContent = `1인당 (${n}명 기준)`;
-  $("sumPer").textContent = fmt(Math.round(total / n)) + "원";
+  const basePer = (flight + hotel + sharedExtra) / n;
+  $("sumMembers").innerHTML = state.members.map((m,idx) => {
+    const name = esc(m || `인원${idx+1}`);
+    const amt = Math.round(basePer + personalExtra[idx]);
+    const sub = personalExtra[idx] ? ` <small style="font-weight:400;color:var(--sub);font-size:12px">(개인 +${fmt(personalExtra[idx])}원)</small>` : "";
+    return `<div class="big"><span>${name} 합계${sub}</span><span>${fmt(amt)}원</span></div>`;
+  }).join("");
   const p = v => total ? (v / total * 100) : 0;
   $("bar").innerHTML = `<i style="width:${p(flight)}%;background:#3b5bdb"></i><i style="width:${p(hotel)}%;background:#74c0fc"></i><i style="width:${p(extra)}%;background:#ffa94d"></i>`;
 }
