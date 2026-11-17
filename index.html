@@ -3,58 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>마쓰야마 여행 계획 🍊</title>
 <title>마쓰야마 여행 계획</title>
 <style>
-  :root{--bg:#fff8f0;--card:#fff;--main:#f08a24;--sub:#fde3c3;--text:#3a2e25;--line:#eadbc8}
-  :root{--bg:#f4f5f8;--card:#fff;--main:#3b5bdb;--main2:#2f4ac0;--soft:#edf1ff;--text:#1d2230;--sub:#6b7280;--line:#e7e9ef;--danger:#e03131}
+  :root{--bg:#fcf9f6;--card:#fff;--main:#f6ad6b;--main2:#ee9a50;--soft:#fff5ea;--text:#2a2420;--sub:#80756c;--line:#f0e8e0;--danger:#e03131;--ink:#5a3a1c}
   *{box-sizing:border-box}
-  body{margin:0;font-family:-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--text)}
-  header{position:relative;background:var(--main);color:#fff;padding:38px 16px 18px;text-align:center}
-  header h1{margin:0;font-size:22px}
-  header p{margin:6px 0 0;font-size:14px;opacity:.9}
-  .rate{position:absolute;top:8px;right:10px;background:rgba(255,255,255,.22);border:none;color:#fff;border-radius:14px;padding:5px 10px;font-size:12px;cursor:pointer;text-align:right;line-height:1.3}
-  .rate small{display:block;font-size:10px;opacity:.85}
-  .members{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:10px;font-size:13px}
-  .members input{border:none;background:rgba(255,255,255,.25);color:#fff;border-radius:12px;padding:4px 10px;font-size:13px;text-align:center;width:72px}
-  .members input:focus{outline:2px solid #fff;background:rgba(255,255,255,.35)}
-  .wrap{max-width:720px;margin:0 auto;padding:12px}
-  .tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px}
-  .tab{flex:1;min-width:76px;padding:10px 6px;border:1px solid var(--line);background:var(--card);border-radius:10px;cursor:pointer;text-align:center;font-size:13px;color:var(--text)}
-  .tab b{display:block;font-size:15px}
-  .tab.active{background:var(--main);color:#fff;border-color:var(--main)}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
-  .daytitle{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
-  .daytitle input{border:none;border-bottom:1px dashed var(--line);font-size:18px;font-weight:700;background:transparent;color:var(--text);flex:1;min-width:140px;padding:4px 0}
-  .hotel{display:flex;align-items:center;gap:6px;font-size:13px;background:var(--sub);padding:6px 10px;border-radius:8px}
-  .hotel input{border:none!important;background:transparent;font-size:13px!important;font-weight:400!important;width:150px;min-width:0!important;flex:none!important;color:var(--text)}
-  .item{display:grid;grid-template-columns:auto 62px 1fr auto;gap:6px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
   body{margin:0;font-family:-apple-system,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
   .wrap{max-width:720px;margin:0 auto;padding:14px 14px 48px}
   input,textarea,button{font-family:inherit}
 
   /* 헤더 */
-  .hero{background:linear-gradient(135deg,#2f4ac0,#4c6ef5);color:#fff;border-radius:22px;padding:18px 18px 16px;margin-bottom:14px;box-shadow:0 8px 24px rgba(59,91,219,.22)}
+  .hero{background:linear-gradient(135deg,#f7b27a,#fbd0a3);color:var(--ink);border-radius:22px;padding:18px 18px 16px;margin-bottom:14px;box-shadow:0 8px 24px rgba(246,173,107,.22)}
   .toprow{display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;opacity:.8}
-  .dday{font-size:12px;font-weight:700;background:rgba(255,255,255,.2);padding:5px 11px;border-radius:999px}
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;opacity:.75}
+  .dday{font-size:12px;font-weight:700;background:rgba(255,255,255,.5);padding:5px 11px;border-radius:999px}
   h1{margin:12px 0 4px;font-size:27px;letter-spacing:-.02em}
   .date{font-size:14px;opacity:.85}
   .members{display:flex;align-items:center;gap:6px;margin-top:14px;flex-wrap:wrap}
   .members span{font-size:12px;opacity:.8}
-  .members input{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:5px 12px;font-size:13px;text-align:center;width:76px}
-  .members input:focus{outline:none;background:rgba(255,255,255,.28);border-color:#fff}
-  .rate{margin-top:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.14);border:none;color:#fff;border-radius:14px;padding:10px 14px;width:100%;cursor:pointer;text-align:left;font-size:13px}
+  .members input{border:1px solid rgba(255,255,255,.6);background:rgba(255,255,255,.4);color:var(--ink);border-radius:999px;padding:5px 12px;font-size:13px;text-align:center;width:76px}
+  .members input:focus{outline:none;background:rgba(255,255,255,.75);border-color:#fff}
+  .rate{margin-top:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.4);border:none;color:var(--ink);border-radius:14px;padding:10px 14px;width:100%;cursor:pointer;text-align:left;font-size:13px}
   .rate small{opacity:.75;font-size:11px}
 
   /* 탭 */
   .tabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 12px}
   .tab{flex:1;min-width:78px;padding:10px 6px;border:1px solid var(--line);background:var(--card);border-radius:14px;cursor:pointer;text-align:center;font-size:12px;color:var(--sub)}
   .tab b{display:block;font-size:15px;color:var(--text);margin-bottom:2px}
-  .tab.active{background:var(--main);border-color:var(--main);color:rgba(255,255,255,.85)}
+  .tab.active{background:var(--main);border-color:var(--main);color:rgba(255,255,255,.9)}
   .tab.active b{color:#fff}
 
-  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 1px 2px rgba(20,30,60,.03)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 1px 2px rgba(90,58,28,.04)}
   h3{margin:0 0 12px;font-size:15px;display:flex;justify-content:space-between;align-items:center}
   h3 small{font-size:12px;font-weight:400;color:var(--sub)}
 
@@ -62,8 +40,8 @@
   .daytitle{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
   .daytitle .title{border:none;border-bottom:1px solid transparent;font-size:19px;font-weight:700;background:transparent;color:var(--text);flex:1;min-width:140px;padding:4px 0}
   .daytitle .title:focus{outline:none;border-bottom-color:var(--main)}
-  .hotel{display:flex;align-items:center;gap:6px;font-size:12px;background:var(--soft);color:var(--main);padding:6px 10px;border-radius:999px}
-  .hotel input{border:none;background:transparent;font-size:12px;font-weight:600;width:130px;color:var(--main)}
+  .hotel{display:flex;align-items:center;gap:6px;font-size:12px;background:var(--soft);color:var(--main2);padding:6px 10px;border-radius:999px}
+  .hotel input{border:none;background:transparent;font-size:12px;font-weight:600;width:130px;color:var(--main2)}
   .hotel input:focus{outline:none}
   .progress{height:5px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:6px}
   .progress i{display:block;height:100%;background:var(--main);width:0;transition:.3s}
@@ -72,40 +50,30 @@
   .list{position:relative}
   .item{display:grid;grid-template-columns:auto 56px 1fr auto;gap:6px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
   .item:last-of-type{border-bottom:none}
-  .item input[type=text]{border:1px solid transparent;border-radius:6px;padding:6px;font-size:15px;background:transparent;width:100%;color:var(--text)}
-  .item input[type=text]:focus{border-color:var(--main);background:#fffdf9;outline:none}
-  .time{font-size:13px!important;color:var(--main)!important;font-weight:600}
-  .item.done .txt{text-decoration:line-through;opacity:.45}
-  .memo{grid-column:2 / 5;font-size:13px!important;color:#7a6a5c!important}
-  .btns{display:flex;gap:2px}
-  .btns button{border:none;background:transparent;cursor:pointer;font-size:14px;padding:4px;color:#a89888}
-  .btns button:hover{color:var(--main)}
-  .add{width:100%;margin-top:8px;padding:10px;border:1.5px dashed var(--main);background:transparent;color:var(--main);border-radius:10px;cursor:pointer;font-size:14px}
-  textarea{width:100%;min-height:80px;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:14px;font-family:inherit;background:#fffdf9;color:var(--text)}
   .item input[type=checkbox]{width:18px;height:18px;accent-color:var(--main)}
   .item input[type=text]{border:1px solid transparent;border-radius:8px;padding:6px;font-size:15px;background:transparent;width:100%;color:var(--text)}
   .item input[type=text]:focus{border-color:var(--main);background:#fff;outline:none}
-  .item .time{font-size:13px;color:var(--main);font-weight:700}
+  .item .time{font-size:13px;color:var(--main2);font-weight:700}
   .item.done .txt{text-decoration:line-through;opacity:.4}
   .item .memo{grid-column:2 / 5;font-size:13px;color:var(--sub);padding-top:0}
   .btns{display:flex;gap:1px}
-  .btns button{border:none;background:transparent;cursor:pointer;font-size:12px;padding:5px 6px;color:#b3b8c4;border-radius:7px}
-  .btns button:hover{color:var(--main);background:var(--soft)}
+  .btns button{border:none;background:transparent;cursor:pointer;font-size:12px;padding:5px 6px;color:#c2b8ae;border-radius:7px}
+  .btns button:hover{color:var(--main2);background:var(--soft)}
   .btns .del:hover{color:var(--danger);background:#fff0f0}
-  .add{width:100%;margin-top:10px;padding:11px;border:1px dashed #c5cbe0;background:transparent;color:var(--main);border-radius:12px;cursor:pointer;font-size:14px;font-weight:600}
+  .add{width:100%;margin-top:10px;padding:11px;border:1px dashed #f0cfa9;background:transparent;color:var(--main2);border-radius:12px;cursor:pointer;font-size:14px;font-weight:600}
   .add:hover{background:var(--soft)}
 
   /* 항공·숙소 */
-  .hcard,.fcard{border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px;background:#fcfcfe}
+  .hcard,.fcard{border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px;background:#fffdfb}
   .hcard input,.fcard input,.erow input{border:1px solid transparent;border-radius:8px;padding:5px 6px;background:transparent;color:var(--text);width:100%}
   .hcard input:focus,.fcard input:focus,.erow input:focus{border-color:var(--main);background:#fff;outline:none}
   .hcard .hn{font-size:16px;font-weight:700}
   .hcard .hs,.fcard .fs{font-size:13px;color:var(--sub)}
   .pr{display:flex;align-items:center;gap:6px;margin-top:6px}
-  .pr input{font-size:17px;font-weight:700;color:var(--main);text-align:right;max-width:150px;margin-left:auto}
+  .pr input{font-size:17px;font-weight:700;color:var(--main2);text-align:right;max-width:150px;margin-left:auto}
   .pr span{font-size:13px;color:var(--sub);white-space:nowrap}
   .ftop{display:flex;gap:6px;align-items:center}
-  .ftop .fl{max-width:84px;font-size:12px;font-weight:700;color:var(--main);background:var(--soft);text-align:center;border-radius:999px}
+  .ftop .fl{max-width:84px;font-size:12px;font-weight:700;color:var(--main2);background:var(--soft);text-align:center;border-radius:999px}
   .ftop .fn{font-size:14px;font-weight:600}
   .fcard .fr{font-size:16px;font-weight:700;margin:4px 0}
   .ftime{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:4px;margin:2px 0 4px}
@@ -114,10 +82,13 @@
   .ftime .mid input{font-size:12px;font-weight:400;color:var(--sub);width:92px}
   .frow{display:grid;grid-template-columns:1fr 1fr;gap:4px}
 
-  /* 기타 비용 */
-  .erow{display:grid;grid-template-columns:1fr 110px auto;gap:6px;align-items:center;margin-bottom:6px}
-  .erow input[type=number]{text-align:right;font-weight:600;color:var(--main)}
-  .erow button{border:none;background:transparent;color:#b3b8c4;cursor:pointer;padding:6px;border-radius:7px}
+  /* 기타 비용 (사람별) */
+  .erow{display:grid;grid-template-columns:1fr 1fr auto;gap:6px 8px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:8px;background:#fffdfb}
+  .erow .en{grid-column:1 / 3;font-weight:600;font-size:14px}
+  .erow label{display:flex;align-items:center;gap:6px;background:var(--soft);border-radius:10px;padding:4px 8px}
+  .erow label span{font-size:12px;font-weight:700;color:var(--main2);white-space:nowrap;max-width:60px;overflow:hidden;text-overflow:ellipsis}
+  .erow label input{text-align:right;font-weight:700;color:var(--main2);background:transparent;padding:5px 2px}
+  .erow button{grid-column:3;grid-row:1;border:none;background:transparent;color:#c2b8ae;cursor:pointer;padding:6px;border-radius:7px}
   .erow button:hover{color:var(--danger);background:#fff0f0}
 
   /* 예산 */
@@ -127,8 +98,10 @@
   .legend b{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
   .sum{background:var(--soft);border-radius:14px;padding:14px;display:grid;gap:8px}
   .sum div{display:flex;justify-content:space-between;font-size:14px}
-  .sum .tot{font-weight:700;border-top:1px solid #d5dcf7;padding-top:8px}
-  .sum .big{font-size:19px;font-weight:800;color:var(--main)}
+  .sum .sub{font-size:13px;color:var(--sub);padding-left:10px}
+  .sum .tot{font-weight:700;border-top:1px solid #f3dcc2;padding-top:8px}
+  .sum .pp{font-size:17px;font-weight:800;color:var(--main2)}
+  .sum .ppd{font-size:12px;color:var(--sub);margin-top:-4px;justify-content:flex-end}
   .hint{font-size:12px;color:var(--sub);margin-top:8px;line-height:1.5}
 
   /* 환율 계산기 */
@@ -140,26 +113,15 @@
   textarea{width:100%;min-height:100px;border:1px solid var(--line);border-radius:12px;padding:10px;font-size:14px;background:#fff;color:var(--text);resize:vertical;line-height:1.5}
   textarea:focus{outline:none;border-color:var(--main)}
   .tools{display:flex;gap:8px;flex-wrap:wrap}
-  .tools button{flex:1;min-width:110px;padding:10px;border:1px solid var(--line);background:var(--card);border-radius:10px;cursor:pointer;font-size:13px;color:var(--text)}
-  .tools button:hover{background:var(--sub)}
-  h3{margin:0 0 8px;font-size:15px}
-  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:20px;font-size:13px;opacity:0;transition:.3s;pointer-events:none}
   .tools button{flex:1;min-width:110px;padding:11px;border:1px solid var(--line);background:#fff;border-radius:12px;cursor:pointer;font-size:13px;color:var(--text)}
-  .tools button:hover{background:var(--soft);border-color:var(--main);color:var(--main)}
+  .tools button:hover{background:var(--soft);border-color:var(--main);color:var(--main2)}
   .tools .primary{background:var(--main);color:#fff;border-color:var(--main)}
   .tools .primary:hover{background:var(--main2);color:#fff}
-  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1d2230;color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:9}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#2a2420;color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:9}
   .toast.show{opacity:1}
 </style>
 </head>
 <body>
-<header>
-  <button class="rate" id="rate" title="누르면 새로고침">💴 환율 불러오는 중…</button>
-  <h1>🍊 마쓰야마 여행 계획</h1>
-  <p>2026.11.21 (토) ~ 11.24 (화) · 3박 4일</p>
-  <div class="members" id="members"></div>
-</header>
-
 <div class="wrap">
   <div class="hero">
     <div class="toprow">
@@ -176,11 +138,9 @@
   <div id="day"></div>
 
   <div class="card">
-    <h3>📝 공통 메모 (준비물, 예약, 가고 싶은 곳 등)</h3>
-    <textarea id="notes" placeholder="자유롭게 적어요"></textarea>
     <h3>항공편</h3>
     <div id="flights"></div>
-    <div class="pr"><span>항공 요금 (2인 왕복 합계)</span><input type="number" id="flightPrice" inputmode="numeric"><span>원</span></div>
+    <div class="pr"><span>항공 요금 (2인 왕복 합계)</span><input type="text" id="flightPrice" inputmode="numeric"><span>원</span></div>
   </div>
 
   <div class="card">
@@ -189,7 +149,7 @@
   </div>
 
   <div class="card">
-    <h3>기타 비용 <small>식비, 교통, 쇼핑 등</small></h3>
+    <h3>기타 비용 <small>식비, 교통, 쇼핑 등 · 사람별로 입력</small></h3>
     <div id="extras"></div>
     <button class="add" id="addExtra">+ 항목 추가</button>
   </div>
@@ -198,24 +158,18 @@
     <h3>예산 요약</h3>
     <div class="bar" id="bar"></div>
     <div class="legend">
-      <span><b style="background:#3b5bdb"></b>항공</span>
-      <span><b style="background:#74c0fc"></b>숙소</span>
-      <span><b style="background:#ffa94d"></b>기타</span>
+      <span><b style="background:#ee9a50"></b>항공</span>
+      <span><b style="background:#f6ad6b"></b>숙소</span>
+      <span><b style="background:#fbd9b5"></b>기타</span>
     </div>
-    <div class="sum">
-      <div><span>항공</span><b id="sumFlight"></b></div>
-      <div><span>숙소</span><b id="sumHotel"></b></div>
-      <div><span>기타</span><b id="sumExtra"></b></div>
-      <div class="tot"><span>총 합계</span><b id="sumAll"></b></div>
-      <div class="big"><span id="perLabel">1인당</span><span id="sumPer"></span></div>
-    </div>
-    <div class="hint">금액을 고치면 합계와 1인당 금액이 바로 바뀌어요. 1인당은 위 이름표 인원수로 나눠요. 도고칸은 USD 결제라 카드 환율에 따라 조금 달라질 수 있어요.</div>
+    <div class="sum" id="sum"></div>
+    <div class="hint">항공과 숙소는 공동 비용이라 인원수대로 똑같이 나누고, 기타 비용은 각자 입력한 금액만 더해요. 위 이름표를 바꾸면 이름도 같이 바뀌어요. 도고칸은 USD 결제라 카드 환율에 따라 조금 달라질 수 있어요.</div>
   </div>
 
   <div class="card">
     <h3>환율 계산기</h3>
     <div class="calc">
-      <input type="number" id="calcJpy" inputmode="numeric" placeholder="엔">
+      <input type="text" id="calcJpy" inputmode="numeric" placeholder="엔">
       <span>엔 =</span>
       <input type="text" id="calcKrw" readonly placeholder="원">
     </div>
@@ -228,395 +182,11 @@
   </div>
 
   <div class="card">
-    <h3>🔗 공유 / 백업</h3>
     <h3>공유 · 백업</h3>
     <div class="tools">
-      <button id="copyLink">공유 링크 복사</button>
       <button class="primary" id="copyLink">공유 링크 복사</button>
       <button id="exportBtn">JSON 내보내기</button>
       <button id="importBtn">JSON 불러오기</button>
       <button id="resetBtn">처음으로 초기화</button>
     </div>
-    <div class="hint">내 수정 내용은 이 브라우저에 자동 저장돼요. 친구에게 바뀐 내용을 보여주려면 "공유 링크 복사"로 만든 링크를 보내세요.</div>
-    <input type="file" id="fileIn" accept=".json" hidden>
-  </div>
-</div>
-@@ -80,49 +200,93 @@
-const KEY = "matsuyama-trip-v1";
-const uid = () => Math.random().toString(36).slice(2, 9);
-const I = (text, time = "", memo = "") => ({ id: uid(), time, text, memo, done: false });
-const fmt = n => Number(n || 0).toLocaleString("ko-KR");
-
-const DEFAULT = () => ({
-  notes: "",
-  members: ["미주", "지수"],
-  flightPrice: 800100,
-  extras: [],
-  flights: [
-    { label: "가는 편", date: "11/21 (토)", flight: "제주항공 7C1703", route: "인천(ICN) → 마쓰야마(MYJ)", dep: "13:05", arr: "14:40", dur: "1시간 35분", cls: "M클래스", memo: "인천 제1터미널 · 수화물 15kg (1인)" },
-    { label: "오는 편", date: "11/24 (화)", flight: "제주항공 7C1704", route: "마쓰야마(MYJ) → 인천(ICN)", dep: "15:40", arr: "17:35", dur: "1시간 55분", cls: "R클래스", memo: "수화물 15kg (1인)" }
-  ],
-  hotels: [
-    { name: "도미 인 마쓰야마", period: "11/21 (토) ~ 11/23 (월) · 2박", room: "더블 (2인) · 금연", price: 643947, memo: "" },
-    { name: "도고온천 도고칸", period: "11/23 (월) ~ 11/24 (화) · 1박", room: "트윈룸", price: 263619, memo: "USD 192.39 결제" }
-  ],
-  days: [
-    { date: "11/21 (토)", title: "도착 & 오카이도", hotel: "도미인 마쓰야마", items: [
-      I("마쓰야마 도착 → 오카이도로 이동"),
-      I("체크인 (도미인)"),
-    { date: "11/21 (토)", title: "도착 & 오카이도", hotel: "도미 인 마쓰야마", items: [
-      I("인천 제1터미널 출발 (제주항공 7C1703)", "13:05", "수화물 15kg"),
-      I("마쓰야마 도착 → 오카이도로 이동", "14:40"),
-      I("체크인 (도미 인)"),
-      I("저녁 식사 & 오카이도 구경"),
-      I("돈키호테"),
-      I("저녁엔 온천 (도미인 대욕장)"),
-      I("무료 야식 라멘 + 아이스크림 🍜🍦", "", "도미인 무료 서비스 시간 확인하기")
-      I("저녁엔 온천 (도미 인 대욕장)"),
-      I("무료 야식 라멘 + 아이스크림", "", "무료 서비스 시간 확인하기")
-    ]},
-    { date: "11/22 (일)", title: "마쓰야마성 & 도고온천", hotel: "도미인 마쓰야마", items: [
-    { date: "11/22 (일)", title: "마쓰야마성 & 도고온천", hotel: "도미 인 마쓰야마", items: [
-      I("아침 식사"),
-      I("마쓰야마성 리프트"),
-      I("카페"),
-      I("GU 쇼핑"),
-      I("점심/저녁 식사"),
-      I("도고온천 본관"),
-      I("도미인 온천도 가능", "", "선택")
-      I("도미 인 온천도 가능", "", "선택")
-    ]},
-    { date: "11/23 (월)", title: "쇼핑 & 도고칸 이동", hotel: "도고칸", items: [
-      I("체크아웃 (도미인)"),
-    { date: "11/23 (월)", title: "쇼핑 & 도고칸 이동", hotel: "도고온천 도고칸", items: [
-      I("체크아웃 (도미 인)"),
-      I("아침 식사"),
-      I("마쓰야마 미쓰코시 / 쇼핑"),
-      I("도고칸 체크인"),
-      I("바이신지?", "", "정확한 장소 확인 필요"),
-      I("숙소(도고칸) 위주로 일정 잡을지 고민", "", "도고 온천 거리 산책 + 숙소에서 쉬기?")
-    ]},
-    { date: "11/24 (화)", title: "우치코 & 귀국", hotel: "체크아웃 → 귀국", items: [
-    { date: "11/24 (화)", title: "우치코 & 귀국", hotel: "도고온천 도고칸 체크아웃", items: [
-      I("체크아웃 (도고칸)"),
-      I("소도시 우치코 방문?", "", "JR 마쓰야마 ↔ 우치코, 시간 여유 확인"),
-      I("타야댐?", "", "교통편 확인 필요"),
-      I("공항 도착", "14:30", "늦어도 이 시간까지"),
-      I("비행기 출발 ✈️", "15:40")
-      I("비행기 출발 (제주항공 7C1704)", "15:40", "17:35 인천 도착")
-    ]}
-  ]
-});
-
-function b64enc(s){ return btoa(unescape(encodeURIComponent(s))); }
-function b64dec(s){ return decodeURIComponent(escape(atob(s))); }
-function fix(s){ if (!s.members) s.members = ["미주", "지수"]; if (s.notes == null) s.notes = ""; return s; }
-
-/* 예전 버전으로 저장된 데이터도 새 형식으로 맞춰줌 */
-function fix(s){
-  const D = DEFAULT();
-  if (!s.members) s.members = D.members;
-  if (s.notes == null) s.notes = "";
-  if (!s.extras) s.extras = [];
-  if (!s.hotels) {
-    s.hotels = D.hotels;
-    const OLD = {"도미인 마쓰야마":"도미 인 마쓰야마","도고칸":"도고온천 도고칸"};
-    s.days.forEach(d => { if (OLD[d.hotel]) d.hotel = OLD[d.hotel]; });
-  }
-  if (!s.flights) {
-    s.flights = D.flights; s.flightPrice = D.flightPrice;
-    try {
-      const d0 = s.days[0].items;
-      d0.unshift(I("인천 제1터미널 출발 (제주항공 7C1703)", "13:05", "수화물 15kg"));
-      const a = d0.find(x => x.text.indexOf("마쓰야마 도착") === 0);
-      if (a && !a.time) a.time = "14:40";
-      const f = s.days[3].items.find(x => x.time === "15:40");
-      if (f) { f.text = "비행기 출발 (제주항공 7C1704)"; if (!f.memo) f.memo = "17:35 인천 도착"; }
-    } catch(e){}
-  }
-  if (s.flightPrice == null) s.flightPrice = 800100;
-  /* 제1터미널 반영 */
-  try {
-    if (s.flights[0].memo === "국제선 · 수화물 15kg (1인)") s.flights[0].memo = "인천 제1터미널 · 수화물 15kg (1인)";
-    s.days[0].items.forEach(x => {
-      if (x.text === "인천 출발 (제주항공 7C1703)") { x.text = "인천 제1터미널 출발 (제주항공 7C1703)"; if (x.memo === "국제선 · 수화물 15kg") x.memo = "수화물 15kg"; }
-    });
-  } catch(e){}
-  return s;
-}
-
-function load(){
-  try {
-@@ -137,64 +301,81 @@
-}
-let state = load();
-let cur = 0;
-let jpyRate = 0; // 1엔당 원
-
-function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
-function toast(msg){ const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1800); }
-const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
-const esc = s => String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
-const $ = id => document.getElementById(id);
-
-/* D-day */
-function renderDday(){
-  const start = new Date(2026, 10, 21), end = new Date(2026, 10, 24);
-  const now = new Date(); const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const diff = Math.round((start - today) / 86400000);
-  let t;
-  if (diff > 0) t = "D-" + diff;
-  else if (today <= end) t = diff === 0 ? "D-DAY" : "여행 " + (1 - diff) + "일차";
-  else t = "여행 끝";
-  $("dday").textContent = t;
-}
-
-/* 멤버 */
-function renderMembers(){
-  document.getElementById("members").innerHTML =
-    "👭 " + state.members.map((n,i) => `<input type="text" data-m="${i}" value="${esc(n)}">`).join("");
-  $("members").innerHTML = "<span>함께하는 사람</span>" + state.members.map((n,i) => `<input type="text" data-m="${i}" value="${esc(n)}">`).join("");
-}
-document.getElementById("members").addEventListener("input", e => {
-$("members").addEventListener("input", e => {
-  const i = e.target.dataset.m; if (i == null) return;
-  state.members[+i] = e.target.value; save();
-  state.members[+i] = e.target.value; save(); updateSum();
-});
-
-/* 탭 */
-function renderTabs(){
-  document.getElementById("tabs").innerHTML = state.days.map((d,i) =>
-  $("tabs").innerHTML = state.days.map((d,i) =>
-    `<button class="tab ${i===cur?"active":""}" data-tab="${i}"><b>${i+1}일차</b>${esc(d.date)}</button>`).join("");
-}
-
-/* 일차 */
-function progressHtml(d){
-  const total = d.items.length, done = d.items.filter(x => x.done).length;
-  const pct = total ? Math.round(done / total * 100) : 0;
-  return `<div class="progress"><i style="width:${pct}%"></i></div><div class="ptext">${done} / ${total} 완료</div>`;
-}
-function renderDay(){
-  const d = state.days[cur];
-  document.getElementById("day").innerHTML = `
-  $("day").innerHTML = `
-    <div class="card">
-      <div class="daytitle">
-        <input type="text" data-f="title" value="${esc(d.title)}" placeholder="오늘의 테마">
-        <div class="hotel">🏨 <input type="text" data-f="hotel" value="${esc(d.hotel)}"></div>
-        <input type="text" class="title" data-f="title" value="${esc(d.title)}" placeholder="오늘의 테마">
-        <div class="hotel">숙소 <input type="text" data-f="hotel" value="${esc(d.hotel)}"></div>
-      </div>
-      ${d.items.map((it, idx) => `
-      <div id="prog">${progressHtml(d)}</div>
-      <div class="list">
-      ${d.items.map(it => `
-        <div class="item ${it.done?"done":""}" data-id="${it.id}">
-          <input type="checkbox" data-f="done" ${it.done?"checked":""}>
-          <input type="text" class="time" data-f="time" value="${esc(it.time)}" placeholder="시간">
-          <input type="text" class="txt" data-f="text" value="${esc(it.text)}" placeholder="일정">
-          <div class="btns">
-            <button data-act="map" title="구글지도에서 검색">지도</button>
-            <button data-act="up" title="위로">▲</button>
-            <button data-act="down" title="아래로">▼</button>
-            <button data-act="del" title="삭제">✕</button>
-            <button class="del" data-act="del" title="삭제">✕</button>
-          </div>
-          <input type="text" class="memo" data-f="memo" value="${esc(it.memo)}" placeholder="메모">
-        </div>`).join("")}
-      </div>
-      <button class="add" data-act="add">+ 일정 추가</button>
-    </div>`;
-}
-
-function render(){ renderMembers(); renderTabs(); renderDay(); document.getElementById("notes").value = state.notes || ""; }
-
-document.getElementById("tabs").addEventListener("click", e => {
-  const t = e.target.closest("[data-tab]"); if (!t) return;
-  cur = +t.dataset.tab; renderTabs(); renderDay();
-});
-
-const dayEl = document.getElementById("day");
-const dayEl = $("day");
-dayEl.addEventListener("input", e => {
-  const f = e.target.dataset.f; if (!f) return;
-  const row = e.target.closest(".item");
-  if (!row) { state.days[cur][f] = e.target.value; save(); return; }
-  const it = state.days[cur].items.find(x => x.id === row.dataset.id);
-  it[f] = f === "done" ? e.target.checked : e.target.value;
-  if (f === "done") row.classList.toggle("done", it.done);
-  if (f === "done") { row.classList.toggle("done", it.done); $("prog").innerHTML = progressHtml(state.days[cur]); }
-  save();
-});
-dayEl.addEventListener("click", e => {
-@@ -204,40 +385,146 @@
-  else {
-    const row = b.closest(".item");
-    const i = items.findIndex(x => x.id === row.dataset.id);
-    if (b.dataset.act === "map") {
-      const q = (items[i].text || "").replace(/\(.*?\)|\?/g, "").trim();
-      if (!q) { toast("일정 이름을 먼저 적어주세요"); return; }
-      window.open("https://www.google.com/maps/search/" + encodeURIComponent("마쓰야마 " + q), "_blank");
-      return;
-    }
-    if (b.dataset.act === "del") items.splice(i, 1);
-    if (b.dataset.act === "up" && i > 0) [items[i-1], items[i]] = [items[i], items[i-1]];
-    if (b.dataset.act === "down" && i < items.length-1) [items[i+1], items[i]] = [items[i], items[i+1]];
-  }
-  save(); renderDay();
-});
-$("tabs").addEventListener("click", e => {
-  const t = e.target.closest("[data-tab]"); if (!t) return;
-  cur = +t.dataset.tab; renderTabs(); renderDay();
-});
-
-document.getElementById("notes").addEventListener("input", e => { state.notes = e.target.value; save(); });
-/* 항공 */
-function renderFlights(){
-  $("flights").innerHTML = state.flights.map((f,i) => `
-    <div class="fcard" data-fi="${i}">
-      <div class="ftop">
-        <input class="fl" data-ff="label" value="${esc(f.label)}">
-        <input class="fn" data-ff="flight" value="${esc(f.flight)}">
-      </div>
-      <input class="fr" data-ff="route" value="${esc(f.route)}">
-      <div class="ftime">
-        <input data-ff="dep" value="${esc(f.dep)}">
-        <div class="mid">→<br><input data-ff="dur" value="${esc(f.dur)}"></div>
-        <input data-ff="arr" value="${esc(f.arr)}">
-      </div>
-      <div class="frow">
-        <input class="fs" data-ff="date" value="${esc(f.date)}">
-        <input class="fs" data-ff="cls" value="${esc(f.cls)}">
-      </div>
-      <input class="fs" data-ff="memo" value="${esc(f.memo)}" placeholder="메모">
-    </div>`).join("");
-  $("flightPrice").value = state.flightPrice;
-}
-$("flights").addEventListener("input", e => {
-  const f = e.target.dataset.ff; if (!f) return;
-  state.flights[+e.target.closest(".fcard").dataset.fi][f] = e.target.value; save();
-});
-$("flightPrice").addEventListener("input", e => { state.flightPrice = +e.target.value || 0; save(); updateSum(); });
-
-document.getElementById("copyLink").onclick = () => {
-/* 숙소 */
-function renderHotels(){
-  $("hotels").innerHTML = state.hotels.map((h,i) => `
-    <div class="hcard" data-h="${i}">
-      <input class="hn" data-hf="name" value="${esc(h.name)}">
-      <input class="hs" data-hf="period" value="${esc(h.period)}">
-      <input class="hs" data-hf="room" value="${esc(h.room)}">
-      <input class="hs" data-hf="memo" value="${esc(h.memo)}" placeholder="메모">
-      <div class="pr"><span>숙박 요금</span><input type="number" data-hf="price" value="${h.price}" inputmode="numeric"><span>원</span></div>
-    </div>`).join("");
-}
-$("hotels").addEventListener("input", e => {
-  const f = e.target.dataset.hf; if (!f) return;
-  const i = +e.target.closest(".hcard").dataset.h;
-  state.hotels[i][f] = f === "price" ? (+e.target.value || 0) : e.target.value;
-  save(); updateSum();
-});
-
-/* 기타 비용 */
-function renderExtras(){
-  $("extras").innerHTML = state.extras.length ? state.extras.map((x,i) => `
-    <div class="erow" data-e="${i}">
-      <input type="text" data-ef="name" value="${esc(x.name)}" placeholder="항목 (예: 교통비)">
-      <input type="number" data-ef="price" value="${x.price || ""}" inputmode="numeric" placeholder="금액">
-      <button data-edel="${i}" title="삭제">✕</button>
-    </div>`).join("") : `<div class="hint" style="margin:0 0 8px">아직 항목이 없어요. 식비, 교통, 쇼핑 예산을 추가해 보세요.</div>`;
-}
-$("extras").addEventListener("input", e => {
-  const f = e.target.dataset.ef; if (!f) return;
-  const i = +e.target.closest(".erow").dataset.e;
-  state.extras[i][f] = f === "price" ? (+e.target.value || 0) : e.target.value;
-  save(); updateSum();
-});
-$("extras").addEventListener("click", e => {
-  const b = e.target.closest("[data-edel]"); if (!b) return;
-  state.extras.splice(+b.dataset.edel, 1); save(); renderExtras(); updateSum();
-});
-$("addExtra").onclick = () => { state.extras.push({ name: "", price: 0 }); save(); renderExtras(); updateSum(); };
-
-/* 예산 */
-function updateSum(){
-  const hotel = state.hotels.reduce((a,h) => a + (+h.price || 0), 0);
-  const flight = +state.flightPrice || 0;
-  const extra = state.extras.reduce((a,x) => a + (+x.price || 0), 0);
-  const total = hotel + flight + extra;
-  const n = Math.max(state.members.length, 1);
-  $("sumFlight").textContent = fmt(flight) + "원";
-  $("sumHotel").textContent = fmt(hotel) + "원";
-  $("sumExtra").textContent = fmt(extra) + "원";
-  $("sumAll").textContent = fmt(total) + "원";
-  $("perLabel").textContent = `1인당 (${n}명 기준)`;
-  $("sumPer").textContent = fmt(Math.round(total / n)) + "원";
-  const p = v => total ? (v / total * 100) : 0;
-  $("bar").innerHTML = `<i style="width:${p(flight)}%;background:#3b5bdb"></i><i style="width:${p(hotel)}%;background:#74c0fc"></i><i style="width:${p(extra)}%;background:#ffa94d"></i>`;
-}
-
-/* 메모·공유 */
-$("notes").addEventListener("input", e => { state.notes = e.target.value; save(); });
-$("copyLink").onclick = () => {
-  const url = location.href.split("#")[0] + "#d=" + b64enc(JSON.stringify(state));
-  navigator.clipboard.writeText(url).then(() => toast("링크 복사됨! 친구에게 보내세요"), () => prompt("복사하세요", url));
-};
-document.getElementById("exportBtn").onclick = () => {
-$("exportBtn").onclick = () => {
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], {type:"application/json"}));
-  a.download = "matsuyama-trip.json"; a.click();
-};
-document.getElementById("importBtn").onclick = () => document.getElementById("fileIn").click();
-document.getElementById("fileIn").onchange = e => {
-$("importBtn").onclick = () => $("fileIn").click();
-$("fileIn").onchange = e => {
-  const f = e.target.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = () => { try { const d = JSON.parse(r.result); if (!d.days) throw 0; state = fix(d); save(); render(); toast("불러오기 완료"); } catch(_) { toast("올바른 파일이 아니에요"); } };
-  r.readAsText(f);
-};
-document.getElementById("resetBtn").onclick = () => {
-$("resetBtn").onclick = () => {
-  if (confirm("모든 수정 내용이 사라지고 처음 초안으로 돌아가요. 계속할까요?")) { state = DEFAULT(); save(); render(); }
-};
-
-function render(){
-  renderDday(); renderMembers(); renderTabs(); renderDay(); renderFlights(); renderHotels(); renderExtras(); updateSum();
-  $("notes").value = state.notes || "";
-}
-
-/* ===== 엔화 환율 (JPY → KRW) ===== */
-const RATE_KEY = "jpy-krw-rate";
-const rateEl = document.getElementById("rate");
-const rateEl = $("rate");
-function calc(){
-  const v = +$("calcJpy").value || 0;
-  $("calcKrw").value = jpyRate && v ? fmt(Math.round(v * jpyRate)) + "원" : "";
-}
-$("calcJpy").addEventListener("input", calc);
-function showRate(r, label){
-  rateEl.innerHTML = `💴 100엔 = <b>${(r*100).toFixed(1)}원</b><small>${label}</small>`;
-  jpyRate = r;
-  rateEl.innerHTML = `<span>100엔 = <b>${(r*100).toFixed(1)}원</b></span><small>${label}</small>`;
-  calc();
-}
-async function loadRate(){
-  try {
-@@ -260,12 +547,12 @@
-      return;
-    } catch(e){}
-  }
-  if (!rateEl.querySelector("b")) rateEl.innerHTML = "💴 환율을 못 불러왔어요<small>눌러서 다시 시도</small>";
-  if (!rateEl.querySelector("b")) rateEl.innerHTML = "<span>환율을 못 불러왔어요</span><small>눌러서 다시 시도</small>";
-}
-rateEl.onclick = () => { rateEl.textContent = "💴 불러오는 중…"; loadRate(); };
-rateEl.onclick = () => { rateEl.textContent = "불러오는 중…"; loadRate(); };
-
-render();
-loadRate();
-</script>
-</body>
-</html>
+    <div class="hint">내 수정 내용은 이 브라우저에 자동 저장돼요. 친구에게 바뀐 내용을 보여주려면 "공유 링크 복사"로 만든 링크를
