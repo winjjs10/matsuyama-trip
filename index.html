@@ -82,10 +82,13 @@
   .ftime .mid input{font-size:12px;font-weight:400;color:var(--sub);width:92px}
   .frow{display:grid;grid-template-columns:1fr 1fr;gap:4px}
 
-  /* 기타 비용 */
-  .erow{display:grid;grid-template-columns:1fr 110px auto;gap:6px;align-items:center;margin-bottom:6px}
-  .erow input[data-ef=price]{text-align:right;font-weight:600;color:var(--main2)}
-  .erow button{border:none;background:transparent;color:#c2b8ae;cursor:pointer;padding:6px;border-radius:7px}
+  /* 기타 비용 (사람별) */
+  .erow{display:grid;grid-template-columns:1fr 1fr auto;gap:6px 8px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:8px;background:#fffdfb}
+  .erow .en{grid-column:1 / 3;font-weight:600;font-size:14px}
+  .erow label{display:flex;align-items:center;gap:6px;background:var(--soft);border-radius:10px;padding:4px 8px}
+  .erow label span{font-size:12px;font-weight:700;color:var(--main2);white-space:nowrap;max-width:60px;overflow:hidden;text-overflow:ellipsis}
+  .erow label input{text-align:right;font-weight:700;color:var(--main2);background:transparent;padding:5px 2px}
+  .erow button{grid-column:3;grid-row:1;border:none;background:transparent;color:#c2b8ae;cursor:pointer;padding:6px;border-radius:7px}
   .erow button:hover{color:var(--danger);background:#fff0f0}
 
   /* 예산 */
@@ -95,8 +98,10 @@
   .legend b{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
   .sum{background:var(--soft);border-radius:14px;padding:14px;display:grid;gap:8px}
   .sum div{display:flex;justify-content:space-between;font-size:14px}
+  .sum .sub{font-size:13px;color:var(--sub);padding-left:10px}
   .sum .tot{font-weight:700;border-top:1px solid #f3dcc2;padding-top:8px}
-  .sum .big{font-size:19px;font-weight:800;color:var(--main2)}
+  .sum .pp{font-size:17px;font-weight:800;color:var(--main2)}
+  .sum .ppd{font-size:12px;color:var(--sub);margin-top:-4px;justify-content:flex-end}
   .hint{font-size:12px;color:var(--sub);margin-top:8px;line-height:1.5}
 
   /* 환율 계산기 */
@@ -144,7 +149,7 @@
   </div>
 
   <div class="card">
-    <h3>기타 비용 <small>식비, 교통, 쇼핑 등</small></h3>
+    <h3>기타 비용 <small>식비, 교통, 쇼핑 등 · 사람별로 입력</small></h3>
     <div id="extras"></div>
     <button class="add" id="addExtra">+ 항목 추가</button>
   </div>
@@ -157,14 +162,8 @@
       <span><b style="background:#f6ad6b"></b>숙소</span>
       <span><b style="background:#fbd9b5"></b>기타</span>
     </div>
-    <div class="sum">
-      <div><span>항공</span><b id="sumFlight"></b></div>
-      <div><span>숙소</span><b id="sumHotel"></b></div>
-      <div><span>기타</span><b id="sumExtra"></b></div>
-      <div class="tot"><span>총 합계</span><b id="sumAll"></b></div>
-      <div class="big"><span id="perLabel">1인당</span><span id="sumPer"></span></div>
-    </div>
-    <div class="hint">금액을 고치면 합계와 1인당 금액이 바로 바뀌어요. 1인당은 위 이름표 인원수로 나눠요. 도고칸은 USD 결제라 카드 환율에 따라 조금 달라질 수 있어요.</div>
+    <div class="sum" id="sum"></div>
+    <div class="hint">항공과 숙소는 공동 비용이라 인원수대로 똑같이 나누고, 기타 비용은 각자 입력한 금액만 더해요. 위 이름표를 바꾸면 이름도 같이 바뀌어요. 도고칸은 USD 결제라 카드 환율에 따라 조금 달라질 수 있어요.</div>
   </div>
 
   <div class="card">
@@ -190,379 +189,4 @@
       <button id="importBtn">JSON 불러오기</button>
       <button id="resetBtn">처음으로 초기화</button>
     </div>
-    <div class="hint">내 수정 내용은 이 브라우저에 자동 저장돼요. 친구에게 바뀐 내용을 보여주려면 "공유 링크 복사"로 만든 링크를 보내세요.</div>
-    <input type="file" id="fileIn" accept=".json" hidden>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-
-<script>
-const KEY = "matsuyama-trip-v1";
-const uid = () => Math.random().toString(36).slice(2, 9);
-const I = (text, time = "", memo = "") => ({ id: uid(), time, text, memo, done: false });
-const fmt = n => Number(n || 0).toLocaleString("ko-KR");
-function commaInput(el){
-  const pos = el.selectionStart;
-  const before = el.value.slice(0,pos).replace(/\D/g,"").length;
-  const digits = el.value.replace(/\D/g,"");
-  el.value = digits ? Number(digits).toLocaleString("ko-KR") : "";
-  let c = 0, p = 0;
-  while (p < el.value.length && c < before) { if (/\d/.test(el.value[p])) c++; p++; }
-  try { el.setSelectionRange(p,p); } catch(e){}
-  return Number(digits) || 0;
-}
-
-const DEFAULT = () => ({
-  notes: "",
-  members: ["미주", "지수"],
-  flightPrice: 800100,
-  extras: [],
-  flights: [
-    { label: "가는 편", date: "11/21 (토)", flight: "제주항공 7C1703", route: "인천(ICN) → 마쓰야마(MYJ)", dep: "13:05", arr: "14:40", dur: "1시간 35분", cls: "M클래스", memo: "인천 제1터미널 · 수화물 15kg (1인)" },
-    { label: "오는 편", date: "11/24 (화)", flight: "제주항공 7C1704", route: "마쓰야마(MYJ) → 인천(ICN)", dep: "15:40", arr: "17:35", dur: "1시간 55분", cls: "R클래스", memo: "수화물 15kg (1인)" }
-  ],
-  hotels: [
-    { name: "도미 인 마쓰야마", period: "11/21 (토) ~ 11/23 (월) · 2박", room: "더블 (2인) · 금연", price: 643947, memo: "" },
-    { name: "도고온천 도고칸", period: "11/23 (월) ~ 11/24 (화) · 1박", room: "트윈룸", price: 263619, memo: "USD 192.39 결제" }
-  ],
-  days: [
-    { date: "11/21 (토)", title: "도착 & 오카이도", hotel: "도미 인 마쓰야마", items: [
-      I("인천 제1터미널 출발 (제주항공 7C1703)", "13:05", "수화물 15kg"),
-      I("마쓰야마 도착 → 오카이도로 이동", "14:40"),
-      I("체크인 (도미 인)"),
-      I("저녁 식사 & 오카이도 구경"),
-      I("돈키호테"),
-      I("저녁엔 온천 (도미 인 대욕장)"),
-      I("무료 야식 라멘 + 아이스크림", "", "무료 서비스 시간 확인하기")
-    ]},
-    { date: "11/22 (일)", title: "마쓰야마성 & 도고온천", hotel: "도미 인 마쓰야마", items: [
-      I("아침 식사"),
-      I("마쓰야마성 리프트"),
-      I("카페"),
-      I("GU 쇼핑"),
-      I("점심/저녁 식사"),
-      I("도고온천 본관"),
-      I("도미 인 온천도 가능", "", "선택")
-    ]},
-    { date: "11/23 (월)", title: "쇼핑 & 도고칸 이동", hotel: "도고온천 도고칸", items: [
-      I("체크아웃 (도미 인)"),
-      I("아침 식사"),
-      I("마쓰야마 미쓰코시 / 쇼핑"),
-      I("도고칸 체크인"),
-      I("바이신지?", "", "정확한 장소 확인 필요"),
-      I("숙소(도고칸) 위주로 일정 잡을지 고민", "", "도고 온천 거리 산책 + 숙소에서 쉬기?")
-    ]},
-    { date: "11/24 (화)", title: "우치코 & 귀국", hotel: "도고온천 도고칸 체크아웃", items: [
-      I("체크아웃 (도고칸)"),
-      I("소도시 우치코 방문?", "", "JR 마쓰야마 ↔ 우치코, 시간 여유 확인"),
-      I("타야댐?", "", "교통편 확인 필요"),
-      I("공항 도착", "14:30", "늦어도 이 시간까지"),
-      I("비행기 출발 (제주항공 7C1704)", "15:40", "17:35 인천 도착")
-    ]}
-  ]
-});
-
-function b64enc(s){ return btoa(unescape(encodeURIComponent(s))); }
-function b64dec(s){ return decodeURIComponent(escape(atob(s))); }
-
-/* 예전 버전으로 저장된 데이터도 새 형식으로 맞춰줌 */
-function fix(s){
-  const D = DEFAULT();
-  if (!s.members) s.members = D.members;
-  if (s.notes == null) s.notes = "";
-  if (!s.extras) s.extras = [];
-  if (!s.hotels) {
-    s.hotels = D.hotels;
-    const OLD = {"도미인 마쓰야마":"도미 인 마쓰야마","도고칸":"도고온천 도고칸"};
-    s.days.forEach(d => { if (OLD[d.hotel]) d.hotel = OLD[d.hotel]; });
-  }
-  if (!s.flights) {
-    s.flights = D.flights; s.flightPrice = D.flightPrice;
-    try {
-      const d0 = s.days[0].items;
-      d0.unshift(I("인천 제1터미널 출발 (제주항공 7C1703)", "13:05", "수화물 15kg"));
-      const a = d0.find(x => x.text.indexOf("마쓰야마 도착") === 0);
-      if (a && !a.time) a.time = "14:40";
-      const f = s.days[3].items.find(x => x.time === "15:40");
-      if (f) { f.text = "비행기 출발 (제주항공 7C1704)"; if (!f.memo) f.memo = "17:35 인천 도착"; }
-    } catch(e){}
-  }
-  if (s.flightPrice == null) s.flightPrice = 800100;
-  /* 제1터미널 반영 */
-  try {
-    if (s.flights[0].memo === "국제선 · 수화물 15kg (1인)") s.flights[0].memo = "인천 제1터미널 · 수화물 15kg (1인)";
-    s.days[0].items.forEach(x => {
-      if (x.text === "인천 출발 (제주항공 7C1703)") { x.text = "인천 제1터미널 출발 (제주항공 7C1703)"; if (x.memo === "국제선 · 수화물 15kg") x.memo = "수화물 15kg"; }
-    });
-  } catch(e){}
-  return s;
-}
-
-function load(){
-  try {
-    const m = location.hash.match(/#d=(.+)/);
-    if (m) { const d = JSON.parse(b64dec(m[1])); if (d.days) return fix(d); }
-  } catch(e){}
-  try {
-    const s = localStorage.getItem(KEY);
-    if (s) return fix(JSON.parse(s));
-  } catch(e){}
-  return DEFAULT();
-}
-let state = load();
-let cur = 0;
-let jpyRate = 0; // 1엔당 원
-
-function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
-function toast(msg){ const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1800); }
-const esc = s => String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
-const $ = id => document.getElementById(id);
-
-/* D-day */
-function renderDday(){
-  const start = new Date(2026, 10, 21), end = new Date(2026, 10, 24);
-  const now = new Date(); const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const diff = Math.round((start - today) / 86400000);
-  let t;
-  if (diff > 0) t = "D-" + diff;
-  else if (today <= end) t = diff === 0 ? "D-DAY" : "여행 " + (1 - diff) + "일차";
-  else t = "여행 끝";
-  $("dday").textContent = t;
-}
-
-/* 멤버 */
-function renderMembers(){
-  $("members").innerHTML = "<span>함께하는 사람</span>" + state.members.map((n,i) => `<input type="text" data-m="${i}" value="${esc(n)}">`).join("");
-}
-$("members").addEventListener("input", e => {
-  const i = e.target.dataset.m; if (i == null) return;
-  state.members[+i] = e.target.value; save(); updateSum();
-});
-
-/* 탭 */
-function renderTabs(){
-  $("tabs").innerHTML = state.days.map((d,i) =>
-    `<button class="tab ${i===cur?"active":""}" data-tab="${i}"><b>${i+1}일차</b>${esc(d.date)}</button>`).join("");
-}
-
-/* 일차 */
-function progressHtml(d){
-  const total = d.items.length, done = d.items.filter(x => x.done).length;
-  const pct = total ? Math.round(done / total * 100) : 0;
-  return `<div class="progress"><i style="width:${pct}%"></i></div><div class="ptext">${done} / ${total} 완료</div>`;
-}
-function renderDay(){
-  const d = state.days[cur];
-  $("day").innerHTML = `
-    <div class="card">
-      <div class="daytitle">
-        <input type="text" class="title" data-f="title" value="${esc(d.title)}" placeholder="오늘의 테마">
-        <div class="hotel">숙소 <input type="text" data-f="hotel" value="${esc(d.hotel)}"></div>
-      </div>
-      <div id="prog">${progressHtml(d)}</div>
-      <div class="list">
-      ${d.items.map(it => `
-        <div class="item ${it.done?"done":""}" data-id="${it.id}">
-          <input type="checkbox" data-f="done" ${it.done?"checked":""}>
-          <input type="text" class="time" data-f="time" value="${esc(it.time)}" placeholder="시간">
-          <input type="text" class="txt" data-f="text" value="${esc(it.text)}" placeholder="일정">
-          <div class="btns">
-            <button data-act="map" title="구글지도에서 검색">지도</button>
-            <button data-act="up" title="위로">▲</button>
-            <button data-act="down" title="아래로">▼</button>
-            <button class="del" data-act="del" title="삭제">✕</button>
-          </div>
-          <input type="text" class="memo" data-f="memo" value="${esc(it.memo)}" placeholder="메모">
-        </div>`).join("")}
-      </div>
-      <button class="add" data-act="add">+ 일정 추가</button>
-    </div>`;
-}
-const dayEl = $("day");
-dayEl.addEventListener("input", e => {
-  const f = e.target.dataset.f; if (!f) return;
-  const row = e.target.closest(".item");
-  if (!row) { state.days[cur][f] = e.target.value; save(); return; }
-  const it = state.days[cur].items.find(x => x.id === row.dataset.id);
-  it[f] = f === "done" ? e.target.checked : e.target.value;
-  if (f === "done") { row.classList.toggle("done", it.done); $("prog").innerHTML = progressHtml(state.days[cur]); }
-  save();
-});
-dayEl.addEventListener("click", e => {
-  const b = e.target.closest("[data-act]"); if (!b) return;
-  const items = state.days[cur].items;
-  if (b.dataset.act === "add") { items.push(I("")); }
-  else {
-    const row = b.closest(".item");
-    const i = items.findIndex(x => x.id === row.dataset.id);
-    if (b.dataset.act === "map") {
-      const q = (items[i].text || "").replace(/\(.*?\)|\?/g, "").trim();
-      if (!q) { toast("일정 이름을 먼저 적어주세요"); return; }
-      window.open("https://www.google.com/maps/search/" + encodeURIComponent("마쓰야마 " + q), "_blank");
-      return;
-    }
-    if (b.dataset.act === "del") items.splice(i, 1);
-    if (b.dataset.act === "up" && i > 0) [items[i-1], items[i]] = [items[i], items[i-1]];
-    if (b.dataset.act === "down" && i < items.length-1) [items[i+1], items[i]] = [items[i], items[i+1]];
-  }
-  save(); renderDay();
-});
-$("tabs").addEventListener("click", e => {
-  const t = e.target.closest("[data-tab]"); if (!t) return;
-  cur = +t.dataset.tab; renderTabs(); renderDay();
-});
-
-/* 항공 */
-function renderFlights(){
-  $("flights").innerHTML = state.flights.map((f,i) => `
-    <div class="fcard" data-fi="${i}">
-      <div class="ftop">
-        <input class="fl" data-ff="label" value="${esc(f.label)}">
-        <input class="fn" data-ff="flight" value="${esc(f.flight)}">
-      </div>
-      <input class="fr" data-ff="route" value="${esc(f.route)}">
-      <div class="ftime">
-        <input data-ff="dep" value="${esc(f.dep)}">
-        <div class="mid">→<br><input data-ff="dur" value="${esc(f.dur)}"></div>
-        <input data-ff="arr" value="${esc(f.arr)}">
-      </div>
-      <div class="frow">
-        <input class="fs" data-ff="date" value="${esc(f.date)}">
-        <input class="fs" data-ff="cls" value="${esc(f.cls)}">
-      </div>
-      <input class="fs" data-ff="memo" value="${esc(f.memo)}" placeholder="메모">
-    </div>`).join("");
-  $("flightPrice").value = fmt(state.flightPrice);
-}
-$("flights").addEventListener("input", e => {
-  const f = e.target.dataset.ff; if (!f) return;
-  state.flights[+e.target.closest(".fcard").dataset.fi][f] = e.target.value; save();
-});
-$("flightPrice").addEventListener("input", e => { state.flightPrice = commaInput(e.target); save(); updateSum(); });
-
-/* 숙소 */
-function renderHotels(){
-  $("hotels").innerHTML = state.hotels.map((h,i) => `
-    <div class="hcard" data-h="${i}">
-      <input class="hn" data-hf="name" value="${esc(h.name)}">
-      <input class="hs" data-hf="period" value="${esc(h.period)}">
-      <input class="hs" data-hf="room" value="${esc(h.room)}">
-      <input class="hs" data-hf="memo" value="${esc(h.memo)}" placeholder="메모">
-      <div class="pr"><span>숙박 요금</span><input type="text" data-hf="price" value="${fmt(h.price)}" inputmode="numeric"><span>원</span></div>
-    </div>`).join("");
-}
-$("hotels").addEventListener("input", e => {
-  const f = e.target.dataset.hf; if (!f) return;
-  const i = +e.target.closest(".hcard").dataset.h;
-  state.hotels[i][f] = f === "price" ? commaInput(e.target) : e.target.value;
-  save(); updateSum();
-});
-
-/* 기타 비용 */
-function renderExtras(){
-  $("extras").innerHTML = state.extras.length ? state.extras.map((x,i) => `
-    <div class="erow" data-e="${i}">
-      <input type="text" data-ef="name" value="${esc(x.name)}" placeholder="항목 (예: 교통비)">
-      <input type="text" data-ef="price" value="${x.price ? fmt(x.price) : ""}" inputmode="numeric" placeholder="금액">
-      <button data-edel="${i}" title="삭제">✕</button>
-    </div>`).join("") : `<div class="hint" style="margin:0 0 8px">아직 항목이 없어요. 식비, 교통, 쇼핑 예산을 추가해 보세요.</div>`;
-}
-$("extras").addEventListener("input", e => {
-  const f = e.target.dataset.ef; if (!f) return;
-  const i = +e.target.closest(".erow").dataset.e;
-  state.extras[i][f] = f === "price" ? commaInput(e.target) : e.target.value;
-  save(); updateSum();
-});
-$("extras").addEventListener("click", e => {
-  const b = e.target.closest("[data-edel]"); if (!b) return;
-  state.extras.splice(+b.dataset.edel, 1); save(); renderExtras(); updateSum();
-});
-$("addExtra").onclick = () => { state.extras.push({ name: "", price: 0 }); save(); renderExtras(); updateSum(); };
-
-/* 예산 */
-function updateSum(){
-  const hotel = state.hotels.reduce((a,h) => a + (+h.price || 0), 0);
-  const flight = +state.flightPrice || 0;
-  const extra = state.extras.reduce((a,x) => a + (+x.price || 0), 0);
-  const total = hotel + flight + extra;
-  const n = Math.max(state.members.length, 1);
-  $("sumFlight").textContent = fmt(flight) + "원";
-  $("sumHotel").textContent = fmt(hotel) + "원";
-  $("sumExtra").textContent = fmt(extra) + "원";
-  $("sumAll").textContent = fmt(total) + "원";
-  $("perLabel").textContent = `1인당 (${n}명 기준)`;
-  $("sumPer").textContent = fmt(Math.round(total / n)) + "원";
-  const p = v => total ? (v / total * 100) : 0;
-  $("bar").innerHTML = `<i style="width:${p(flight)}%;background:#ee9a50"></i><i style="width:${p(hotel)}%;background:#f6ad6b"></i><i style="width:${p(extra)}%;background:#fbd9b5"></i>`;
-}
-
-/* 메모·공유 */
-$("notes").addEventListener("input", e => { state.notes = e.target.value; save(); });
-$("copyLink").onclick = () => {
-  const url = location.href.split("#")[0] + "#d=" + b64enc(JSON.stringify(state));
-  navigator.clipboard.writeText(url).then(() => toast("링크 복사됨! 친구에게 보내세요"), () => prompt("복사하세요", url));
-};
-$("exportBtn").onclick = () => {
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], {type:"application/json"}));
-  a.download = "matsuyama-trip.json"; a.click();
-};
-$("importBtn").onclick = () => $("fileIn").click();
-$("fileIn").onchange = e => {
-  const f = e.target.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = () => { try { const d = JSON.parse(r.result); if (!d.days) throw 0; state = fix(d); save(); render(); toast("불러오기 완료"); } catch(_) { toast("올바른 파일이 아니에요"); } };
-  r.readAsText(f);
-};
-$("resetBtn").onclick = () => {
-  if (confirm("모든 수정 내용이 사라지고 처음 초안으로 돌아가요. 계속할까요?")) { state = DEFAULT(); save(); render(); }
-};
-
-function render(){
-  renderDday(); renderMembers(); renderTabs(); renderDay(); renderFlights(); renderHotels(); renderExtras(); updateSum();
-  $("notes").value = state.notes || "";
-}
-
-/* ===== 엔화 환율 (JPY → KRW) ===== */
-const RATE_KEY = "jpy-krw-rate";
-const rateEl = $("rate");
-function calc(){
-  const v = Number($("calcJpy").value.replace(/\D/g,"")) || 0;
-  $("calcKrw").value = jpyRate && v ? fmt(Math.round(v * jpyRate)) + "원" : "";
-}
-$("calcJpy").addEventListener("input", e => { commaInput(e.target); calc(); });
-function showRate(r, label){
-  jpyRate = r;
-  rateEl.innerHTML = `<span>100엔 = <b>${(r*100).toLocaleString("ko-KR",{minimumFractionDigits:1,maximumFractionDigits:1})}원</b></span><small>${label}</small>`;
-  calc();
-}
-async function loadRate(){
-  try {
-    const c = JSON.parse(localStorage.getItem(RATE_KEY) || "null");
-    if (c) showRate(c.rate, c.label + " (저장값)");
-  } catch(e){}
-  const sources = [
-    ["https://open.er-api.com/v6/latest/JPY", j => j.rates.KRW],
-    ["https://api.frankfurter.app/latest?from=JPY&to=KRW", j => j.rates.KRW]
-  ];
-  for (const [url, pick] of sources) {
-    try {
-      const res = await fetch(url);
-      const r = pick(await res.json());
-      if (!r) continue;
-      const now = new Date();
-      const label = `${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")} 기준`;
-      showRate(r, label);
-      try { localStorage.setItem(RATE_KEY, JSON.stringify({rate:r, label})); } catch(e){}
-      return;
-    } catch(e){}
-  }
-  if (!rateEl.querySelector("b")) rateEl.innerHTML = "<span>환율을 못 불러왔어요</span><small>눌러서 다시 시도</small>";
-}
-rateEl.onclick = () => { rateEl.textContent = "불러오는 중…"; loadRate(); };
-
-render();
-loadRate();
-</script>
-</body>
-</html>
+    <div class="hint">내 수정 내용은 이 브라우저에 자동 저장돼요. 친구에게 바뀐 내용을 보여주려면 "공유 링크 복사"로 만든 링크를
