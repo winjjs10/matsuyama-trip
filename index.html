@@ -56,6 +56,8 @@
   .item .time{font-size:13px;color:var(--main);font-weight:700}
   .item.done .txt{text-decoration:line-through;opacity:.4}
   .item .memo{grid-column:2 / 5;font-size:13px;color:var(--sub);padding-top:0}
+  .item textarea.memo{grid-column:2 / 5;font-size:13px;color:var(--sub);padding:4px 6px;border:1px solid transparent;border-radius:8px;background:transparent;width:100%;min-height:0;resize:none;overflow:hidden;line-height:1.45;box-sizing:border-box}
+  .item textarea.memo:focus{border-color:var(--main);background:#fff;outline:none}
   .btns{display:flex;gap:1px}
   .btns button{border:none;background:transparent;cursor:pointer;font-size:12px;padding:5px 6px;color:#b3b8c4;border-radius:7px}
   .btns button:hover{color:var(--main);background:var(--soft)}
@@ -86,7 +88,7 @@
   .erow{display:grid;grid-template-columns:72px 1fr 94px auto;gap:6px;align-items:center;margin-bottom:6px}
   .erow select{border:1px solid var(--line);border-radius:8px;padding:6px 4px;background:#fff;color:var(--text);font-size:12px;font-weight:600;font-family:inherit}
   .erow select:focus{outline:none;border-color:var(--main)}
-  .erow input[type=number]{text-align:right;font-weight:600;color:var(--main)}
+  .erow input[data-ef="price"]{text-align:right;font-weight:600;color:var(--main)}
   .erow button{border:none;background:transparent;color:#b3b8c4;cursor:pointer;padding:6px;border-radius:7px}
   .erow button:hover{color:var(--danger);background:#fff0f0}
 
@@ -137,7 +139,7 @@
   <div class="card">
     <h3>항공편</h3>
     <div id="flights"></div>
-    <div class="pr"><span>항공 요금 (2인 왕복 합계)</span><input type="number" id="flightPrice" inputmode="numeric"><span>원</span></div>
+    <div class="pr"><span>항공 요금 (2인 왕복 합계)</span><input type="text" id="flightPrice" inputmode="numeric"><span>원</span></div>
   </div>
 
   <div class="card">
@@ -172,7 +174,7 @@
   <div class="card">
     <h3>환율 계산기</h3>
     <div class="calc">
-      <input type="number" id="calcJpy" inputmode="numeric" placeholder="엔">
+      <input type="text" id="calcJpy" inputmode="numeric" placeholder="엔">
       <span>엔 =</span>
       <input type="text" id="calcKrw" readonly placeholder="원">
     </div>
@@ -203,6 +205,23 @@ const KEY = "matsuyama-trip-v2";
 const uid = () => Math.random().toString(36).slice(2, 9);
 const I = (text, time = "", memo = "") => ({ id: uid(), time, text, memo, done: false });
 const fmt = n => Number(n || 0).toLocaleString("ko-KR");
+const parseNum = s => Number(String(s || "").replace(/[^\d]/g, "")) || 0;
+function formatMoneyInput(el, allowZero){
+  const raw = el.value;
+  const pos = el.selectionStart ?? raw.length;
+  const digitsBefore = raw.slice(0, pos).replace(/[^\d]/g, "").length;
+  const num = parseNum(raw);
+  const formatted = num ? fmt(num) : (allowZero && raw.trim() === "0" ? "0" : "");
+  el.value = formatted;
+  let count = 0, nextPos = formatted.length;
+  for (let i = 0; i < formatted.length; i++) {
+    if (/\d/.test(formatted[i])) count++;
+    if (count >= digitsBefore) { nextPos = digitsBefore === 0 ? 0 : i + 1; break; }
+  }
+  try { el.setSelectionRange(nextPos, nextPos); } catch(e){}
+  return num;
+}
+function autoResize(el){ el.style.height = "auto"; el.style.height = el.scrollHeight + "px"; }
 
 const DEFAULT = () => ({
   notes: "",
@@ -370,14 +389,16 @@ function renderDay(){
             <button data-act="down" title="아래로">▼</button>
             <button class="del" data-act="del" title="삭제">✕</button>
           </div>
-          <input type="text" class="memo" data-f="memo" value="${esc(it.memo)}" placeholder="메모">
+          <textarea class="memo" data-f="memo" rows="1" placeholder="메모">${esc(it.memo)}</textarea>
         </div>`).join("")}
       </div>
       <button class="add" data-act="add">+ 일정 추가</button>
     </div>`;
+  dayEl.querySelectorAll("textarea.memo").forEach(autoResize);
 }
 const dayEl = $("day");
 dayEl.addEventListener("input", e => {
+  if (e.target.tagName === "TEXTAREA") autoResize(e.target);
   const f = e.target.dataset.f; if (!f) return;
   const row = e.target.closest(".item");
   if (!row) { state.days[cur][f] = e.target.value; save(); return; }
@@ -430,13 +451,13 @@ function renderFlights(){
       </div>
       <input class="fs" data-ff="memo" value="${esc(f.memo)}" placeholder="메모">
     </div>`).join("");
-  $("flightPrice").value = state.flightPrice;
+  $("flightPrice").value = state.flightPrice ? fmt(state.flightPrice) : "";
 }
 $("flights").addEventListener("input", e => {
   const f = e.target.dataset.ff; if (!f) return;
   state.flights[+e.target.closest(".fcard").dataset.fi][f] = e.target.value; save();
 });
-$("flightPrice").addEventListener("input", e => { state.flightPrice = +e.target.value || 0; save(); updateSum(); });
+$("flightPrice").addEventListener("input", e => { state.flightPrice = formatMoneyInput(e.target, true); save(); updateSum(); });
 
 /* 숙소 */
 function renderHotels(){
@@ -446,13 +467,13 @@ function renderHotels(){
       <input class="hs" data-hf="period" value="${esc(h.period)}">
       <input class="hs" data-hf="room" value="${esc(h.room)}">
       <input class="hs" data-hf="memo" value="${esc(h.memo)}" placeholder="메모">
-      <div class="pr"><span>숙박 요금</span><input type="number" data-hf="price" value="${h.price}" inputmode="numeric"><span>원</span></div>
+      <div class="pr"><span>숙박 요금</span><input type="text" data-hf="price" value="${h.price ? fmt(h.price) : ""}" inputmode="numeric"><span>원</span></div>
     </div>`).join("");
 }
 $("hotels").addEventListener("input", e => {
   const f = e.target.dataset.hf; if (!f) return;
   const i = +e.target.closest(".hcard").dataset.h;
-  state.hotels[i][f] = f === "price" ? (+e.target.value || 0) : e.target.value;
+  state.hotels[i][f] = f === "price" ? formatMoneyInput(e.target, true) : e.target.value;
   save(); updateSum();
 });
 
@@ -467,7 +488,7 @@ function renderExtras(){
         ${opts.map(([v,lbl]) => `<option value="${v}" ${who===v?"selected":""}>${esc(lbl)}</option>`).join("")}
       </select>
       <input type="text" data-ef="name" value="${esc(x.name)}" placeholder="항목 (예: 쇼핑, 식비)">
-      <input type="number" data-ef="price" value="${x.price || ""}" inputmode="numeric" placeholder="금액">
+      <input type="text" data-ef="price" value="${x.price ? fmt(x.price) : ""}" inputmode="numeric" placeholder="금액">
       <button data-edel="${i}" title="삭제">✕</button>
     </div>`;
   }).join("") : `<div class="hint" style="margin:0 0 8px">아직 항목이 없어요. 공동/개인별 식비, 교통, 쇼핑 예산을 추가해 보세요.</div>`;
@@ -475,7 +496,7 @@ function renderExtras(){
 function onExtraChange(e){
   const f = e.target.dataset.ef; if (!f) return;
   const i = +e.target.closest(".erow").dataset.e;
-  state.extras[i][f] = f === "price" ? (+e.target.value || 0) : e.target.value;
+  state.extras[i][f] = f === "price" ? formatMoneyInput(e.target, false) : e.target.value;
   save(); updateSum();
 }
 $("extras").addEventListener("input", onExtraChange);
@@ -546,11 +567,12 @@ function render(){
 /* ===== 엔화 환율 (JPY → KRW) ===== */
 const RATE_KEY = "jpy-krw-rate";
 const rateEl = $("rate");
-function calc(){
-  const v = +$("calcJpy").value || 0;
+function calc(fromInput){
+  const el = $("calcJpy");
+  const v = fromInput ? formatMoneyInput(el, false) : parseNum(el.value);
   $("calcKrw").value = jpyRate && v ? fmt(Math.round(v * jpyRate)) + "원" : "";
 }
-$("calcJpy").addEventListener("input", calc);
+$("calcJpy").addEventListener("input", () => calc(true));
 function showRate(r, label){
   jpyRate = r;
   rateEl.innerHTML = `<span>100엔 = <b>${(r*100).toFixed(1)}원</b></span><small>${label}</small>`;
