@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>마쓰야마 여행 계획 🍊</title>
+<style>
+  :root{--bg:#fff8f0;--card:#fff;--main:#f08a24;--sub:#fde3c3;--text:#3a2e25;--line:#eadbc8}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--text)}
+  header{background:var(--main);color:#fff;padding:20px 16px;text-align:center}
+  header h1{margin:0;font-size:22px}
+  header p{margin:6px 0 0;font-size:14px;opacity:.9}
+  .wrap{max-width:720px;margin:0 auto;padding:12px}
+  .tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px}
+  .tab{flex:1;min-width:76px;padding:10px 6px;border:1px solid var(--line);background:var(--card);border-radius:10px;cursor:pointer;text-align:center;font-size:13px;color:var(--text)}
+  .tab b{display:block;font-size:15px}
+  .tab.active{background:var(--main);color:#fff;border-color:var(--main)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+  .daytitle{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+  .daytitle input{border:none;border-bottom:1px dashed var(--line);font-size:18px;font-weight:700;background:transparent;color:var(--text);flex:1;min-width:140px;padding:4px 0}
+  .hotel{display:flex;align-items:center;gap:6px;font-size:13px;background:var(--sub);padding:6px 10px;border-radius:8px}
+  .hotel input{border:none;background:transparent;font-size:13px;width:150px;color:var(--text)}
+  .item{display:grid;grid-template-columns:auto 62px 1fr auto;gap:6px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+  .item:last-of-type{border-bottom:none}
+  .item input[type=text]{border:1px solid transparent;border-radius:6px;padding:6px;font-size:15px;background:transparent;width:100%;color:var(--text)}
+  .item input[type=text]:focus{border-color:var(--main);background:#fffdf9;outline:none}
+  .time{font-size:13px!important;color:var(--main)!important;font-weight:600}
+  .item.done .txt{text-decoration:line-through;opacity:.45}
+  .memo{grid-column:2 / 5;font-size:13px!important;color:#7a6a5c!important}
+  .btns{display:flex;gap:2px}
+  .btns button{border:none;background:transparent;cursor:pointer;font-size:14px;padding:4px;color:#a89888}
+  .btns button:hover{color:var(--main)}
+  .add{width:100%;margin-top:8px;padding:10px;border:1.5px dashed var(--main);background:transparent;color:var(--main);border-radius:10px;cursor:pointer;font-size:14px}
+  textarea{width:100%;min-height:80px;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:14px;font-family:inherit;background:#fffdf9;color:var(--text)}
+  .tools{display:flex;gap:8px;flex-wrap:wrap}
+  .tools button{flex:1;min-width:110px;padding:10px;border:1px solid var(--line);background:var(--card);border-radius:10px;cursor:pointer;font-size:13px;color:var(--text)}
+  .tools button:hover{background:var(--sub)}
+  h3{margin:0 0 8px;font-size:15px}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:20px;font-size:13px;opacity:0;transition:.3s;pointer-events:none}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <h1>🍊 마쓰야마 여행 계획</h1>
+  <p>2026.11.21 (토) ~ 11.24 (화) · 3박 4일</p>
+</header>
+
+<div class="wrap">
+  <div class="tabs" id="tabs"></div>
+  <div id="day"></div>
+
+  <div class="card">
+    <h3>📝 공통 메모 (준비물, 예약, 가고 싶은 곳 등)</h3>
+    <textarea id="notes" placeholder="자유롭게 적어요"></textarea>
+  </div>
+
+  <div class="card">
+    <h3>🔗 공유 / 백업</h3>
+    <div class="tools">
+      <button id="copyLink">공유 링크 복사</button>
+      <button id="exportBtn">JSON 내보내기</button>
+      <button id="importBtn">JSON 불러오기</button>
+      <button id="resetBtn">처음으로 초기화</button>
+    </div>
+    <input type="file" id="fileIn" accept=".json" hidden>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY = "matsuyama-trip-v1";
+const uid = () => Math.random().toString(36).slice(2, 9);
+const I = (text, time = "", memo = "") => ({ id: uid(), time, text, memo, done: false });
+
+const DEFAULT = () => ({
+  notes: "",
+  days: [
+    { date: "11/21 (토)", title: "도착 & 오카이도", hotel: "도미인 마쓰야마", items: [
+      I("마쓰야마 도착 → 오카이도로 이동"),
+      I("체크인 (도미인)"),
+      I("저녁 식사 & 오카이도 구경"),
+      I("돈키호테"),
+      I("저녁엔 온천 (도미인 대욕장)"),
+      I("무료 야식 라멘 + 아이스크림 🍜🍦", "", "도미인 무료 서비스 시간 확인하기")
+    ]},
+    { date: "11/22 (일)", title: "마쓰야마성 & 도고온천", hotel: "도미인 마쓰야마", items: [
+      I("아침 식사"),
+      I("마쓰야마성 리프트"),
+      I("카페"),
+      I("GU 쇼핑"),
+      I("점심/저녁 식사"),
+      I("도고온천 본관"),
+      I("도미인 온천도 가능", "", "선택")
+    ]},
+    { date: "11/23 (월)", title: "쇼핑 & 도고칸 이동", hotel: "도고칸", items: [
+      I("체크아웃 (도미인)"),
+      I("아침 식사"),
+      I("마쓰야마 미쓰코시 / 쇼핑"),
+      I("도고칸 체크인"),
+      I("바이신지?", "", "정확한 장소 확인 필요"),
+      I("숙소(도고칸) 위주로 일정 잡을지 고민", "", "도고 온천 거리 산책 + 숙소에서 쉬기?")
+    ]},
+    { date: "11/24 (화)", title: "우치코 & 귀국", hotel: "체크아웃 → 귀국", items: [
+      I("체크아웃 (도고칸)"),
+      I("소도시 우치코 방문?", "", "JR 마쓰야마 ↔ 우치코, 시간 여유 확인"),
+      I("타야댐?", "", "교통편 확인 필요"),
+      I("공항 도착", "14:30", "늦어도 이 시간까지"),
+      I("비행기 출발 ✈️", "15:40")
+    ]}
+  ]
+});
+
+function b64enc(s){ return btoa(unescape(encodeURIComponent(s))); }
+function b64dec(s){ return decodeURIComponent(escape(atob(s))); }
+
+function load(){
+  try {
+    const m = location.hash.match(/#d=(.+)/);
+    if (m) { const d = JSON.parse(b64dec(m[1])); if (d.days) return d; }
+  } catch(e){}
+  try {
+    const s = localStorage.getItem(KEY);
+    if (s) return JSON.parse(s);
+  } catch(e){}
+  return DEFAULT();
+}
+let state = load();
+let cur = 0;
+
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+function toast(msg){ const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1800); }
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+
+function renderTabs(){
+  document.getElementById("tabs").innerHTML = state.days.map((d,i) =>
+    `<button class="tab ${i===cur?"active":""}" data-tab="${i}"><b>${i+1}일차</b>${esc(d.date)}</button>`).join("");
+}
+
+function renderDay(){
+  const d = state.days[cur];
+  document.getElementById("day").innerHTML = `
+    <div class="card">
+      <div class="daytitle">
+        <input type="text" data-f="title" value="${esc(d.title)}" placeholder="오늘의 테마">
+        <div class="hotel">🏨 <input type="text" data-f="hotel" value="${esc(d.hotel)}"></div>
+      </div>
+      ${d.items.map((it, idx) => `
+        <div class="item ${it.done?"done":""}" data-id="${it.id}">
+          <input type="checkbox" data-f="done" ${it.done?"checked":""}>
+          <input type="text" class="time" data-f="time" value="${esc(it.time)}" placeholder="시간">
+          <input type="text" class="txt" data-f="text" value="${esc(it.text)}" placeholder="일정">
+          <div class="btns">
+            <button data-act="up" title="위로">▲</button>
+            <button data-act="down" title="아래로">▼</button>
+            <button data-act="del" title="삭제">✕</button>
+          </div>
+          <input type="text" class="memo" data-f="memo" value="${esc(it.memo)}" placeholder="메모">
+        </div>`).join("")}
+      <button class="add" data-act="add">+ 일정 추가</button>
+    </div>`;
+}
+
+function render(){ renderTabs(); renderDay(); document.getElementById("notes").value = state.notes || ""; }
+
+document.getElementById("tabs").addEventListener("click", e => {
+  const t = e.target.closest("[data-tab]"); if (!t) return;
+  cur = +t.dataset.tab; renderTabs(); renderDay();
+});
+
+const dayEl = document.getElementById("day");
+dayEl.addEventListener("input", e => {
+  const f = e.target.dataset.f; if (!f) return;
+  const row = e.target.closest(".item");
+  if (!row) { state.days[cur][f] = e.target.value; save(); return; }
+  const it = state.days[cur].items.find(x => x.id === row.dataset.id);
+  it[f] = f === "done" ? e.target.checked : e.target.value;
+  if (f === "done") row.classList.toggle("done", it.done);
+  save();
+});
+dayEl.addEventListener("click", e => {
+  const b = e.target.closest("[data-act]"); if (!b) return;
+  const items = state.days[cur].items;
+  if (b.dataset.act === "add") { items.push(I("")); }
+  else {
+    const row = b.closest(".item");
+    const i = items.findIndex(x => x.id === row.dataset.id);
+    if (b.dataset.act === "del") items.splice(i, 1);
+    if (b.dataset.act === "up" && i > 0) [items[i-1], items[i]] = [items[i], items[i-1]];
+    if (b.dataset.act === "down" && i < items.length-1) [items[i+1], items[i]] = [items[i], items[i+1]];
+  }
+  save(); renderDay();
+});
+
+document.getElementById("notes").addEventListener("input", e => { state.notes = e.target.value; save(); });
+
+document.getElementById("copyLink").onclick = () => {
+  const url = location.href.split("#")[0] + "#d=" + b64enc(JSON.stringify(state));
+  navigator.clipboard.writeText(url).then(() => toast("링크 복사됨! 친구에게 보내세요"), () => prompt("복사하세요", url));
+};
+document.getElementById("exportBtn").onclick = () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], {type:"application/json"}));
+  a.download = "matsuyama-trip.json"; a.click();
+};
+document.getElementById("importBtn").onclick = () => document.getElementById("fileIn").click();
+document.getElementById("fileIn").onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => { try { const d = JSON.parse(r.result); if (!d.days) throw 0; state = d; save(); render(); toast("불러오기 완료"); } catch(_) { toast("올바른 파일이 아니에요"); } };
+  r.readAsText(f);
+};
+document.getElementById("resetBtn").onclick = () => {
+  if (confirm("모든 수정 내용이 사라지고 처음 초안으로 돌아가요. 계속할까요?")) { state = DEFAULT(); save(); render(); }
+};
+
+render();
+</script>
+</body>
+</html>
