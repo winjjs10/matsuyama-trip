@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>마쓰야마 여행 계획</title>
 <style>
+  :root{--bg:#f4f5f8;--card:#fff;--main:#3b5bdb;--main2:#2f4ac0;--soft:#edf1ff;--text:#1d2230;--sub:#6b7280;--line:#e7e9ef;--danger:#e03131}
   :root{--bg:#fcf9f6;--card:#fff;--main:#f6ad6b;--main2:#ee9a50;--soft:#fff5ea;--text:#2a2420;--sub:#80756c;--line:#f0e8e0;--danger:#e03131;--ink:#5a3a1c}
   *{box-sizing:border-box}
   body{margin:0;font-family:-apple-system,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
@@ -12,14 +13,20 @@
   input,textarea,button{font-family:inherit}
 
   /* 헤더 */
+  .hero{background:linear-gradient(135deg,#2f4ac0,#4c6ef5);color:#fff;border-radius:22px;padding:18px 18px 16px;margin-bottom:14px;box-shadow:0 8px 24px rgba(59,91,219,.22)}
   .hero{background:linear-gradient(135deg,#f7b27a,#fbd0a3);color:var(--ink);border-radius:22px;padding:18px 18px 16px;margin-bottom:14px;box-shadow:0 8px 24px rgba(246,173,107,.22)}
   .toprow{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;opacity:.8}
+  .dday{font-size:12px;font-weight:700;background:rgba(255,255,255,.2);padding:5px 11px;border-radius:999px}
   .eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;opacity:.75}
   .dday{font-size:12px;font-weight:700;background:rgba(255,255,255,.5);padding:5px 11px;border-radius:999px}
   h1{margin:12px 0 4px;font-size:27px;letter-spacing:-.02em}
   .date{font-size:14px;opacity:.85}
   .members{display:flex;align-items:center;gap:6px;margin-top:14px;flex-wrap:wrap}
   .members span{font-size:12px;opacity:.8}
+  .members input{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:5px 12px;font-size:13px;text-align:center;width:76px}
+  .members input:focus{outline:none;background:rgba(255,255,255,.28);border-color:#fff}
+  .rate{margin-top:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.14);border:none;color:#fff;border-radius:14px;padding:10px 14px;width:100%;cursor:pointer;text-align:left;font-size:13px}
   .members input{border:1px solid rgba(255,255,255,.6);background:rgba(255,255,255,.4);color:var(--ink);border-radius:999px;padding:5px 12px;font-size:13px;text-align:center;width:76px}
   .members input:focus{outline:none;background:rgba(255,255,255,.75);border-color:#fff}
   .rate{margin-top:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.4);border:none;color:var(--ink);border-radius:14px;padding:10px 14px;width:100%;cursor:pointer;text-align:left;font-size:13px}
@@ -29,9 +36,11 @@
   .tabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 12px}
   .tab{flex:1;min-width:78px;padding:10px 6px;border:1px solid var(--line);background:var(--card);border-radius:14px;cursor:pointer;text-align:center;font-size:12px;color:var(--sub)}
   .tab b{display:block;font-size:15px;color:var(--text);margin-bottom:2px}
+  .tab.active{background:var(--main);border-color:var(--main);color:rgba(255,255,255,.85)}
   .tab.active{background:var(--main);border-color:var(--main);color:rgba(255,255,255,.9)}
   .tab.active b{color:#fff}
 
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 1px 2px rgba(20,30,60,.03)}
   .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 1px 2px rgba(90,58,28,.04)}
   h3{margin:0 0 12px;font-size:15px;display:flex;justify-content:space-between;align-items:center}
   h3 small{font-size:12px;font-weight:400;color:var(--sub)}
@@ -40,153 +49,232 @@
   .daytitle{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
   .daytitle .title{border:none;border-bottom:1px solid transparent;font-size:19px;font-weight:700;background:transparent;color:var(--text);flex:1;min-width:140px;padding:4px 0}
   .daytitle .title:focus{outline:none;border-bottom-color:var(--main)}
+  .hotel{display:flex;align-items:center;gap:6px;font-size:12px;background:var(--soft);color:var(--main);padding:6px 10px;border-radius:999px}
+  .hotel input{border:none;background:transparent;font-size:12px;font-weight:600;width:130px;color:var(--main)}
   .hotel{display:flex;align-items:center;gap:6px;font-size:12px;background:var(--soft);color:var(--main2);padding:6px 10px;border-radius:999px}
   .hotel input{border:none;background:transparent;font-size:12px;font-weight:600;width:130px;color:var(--main2)}
   .hotel input:focus{outline:none}
   .progress{height:5px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:6px}
   .progress i{display:block;height:100%;background:var(--main);width:0;transition:.3s}
-  .ptext{font-size:11px;color:var(--sub);margin-bottom:6px;text-align:right}
-
-  .list{position:relative}
-  .item{display:grid;grid-template-columns:auto 56px 1fr auto;gap:6px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
-  .item:last-of-type{border-bottom:none}
+@@ -53,27 +53,27 @@
   .item input[type=checkbox]{width:18px;height:18px;accent-color:var(--main)}
   .item input[type=text]{border:1px solid transparent;border-radius:8px;padding:6px;font-size:15px;background:transparent;width:100%;color:var(--text)}
   .item input[type=text]:focus{border-color:var(--main);background:#fff;outline:none}
+  .item .time{font-size:13px;color:var(--main);font-weight:700}
   .item .time{font-size:13px;color:var(--main2);font-weight:700}
   .item.done .txt{text-decoration:line-through;opacity:.4}
   .item .memo{grid-column:2 / 5;font-size:13px;color:var(--sub);padding-top:0}
   .btns{display:flex;gap:1px}
+  .btns button{border:none;background:transparent;cursor:pointer;font-size:12px;padding:5px 6px;color:#b3b8c4;border-radius:7px}
+  .btns button:hover{color:var(--main);background:var(--soft)}
   .btns button{border:none;background:transparent;cursor:pointer;font-size:12px;padding:5px 6px;color:#c2b8ae;border-radius:7px}
   .btns button:hover{color:var(--main2);background:var(--soft)}
   .btns .del:hover{color:var(--danger);background:#fff0f0}
+  .add{width:100%;margin-top:10px;padding:11px;border:1px dashed #c5cbe0;background:transparent;color:var(--main);border-radius:12px;cursor:pointer;font-size:14px;font-weight:600}
   .add{width:100%;margin-top:10px;padding:11px;border:1px dashed #f0cfa9;background:transparent;color:var(--main2);border-radius:12px;cursor:pointer;font-size:14px;font-weight:600}
   .add:hover{background:var(--soft)}
 
   /* 항공·숙소 */
+  .hcard,.fcard{border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px;background:#fcfcfe}
   .hcard,.fcard{border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px;background:#fffdfb}
   .hcard input,.fcard input,.erow input{border:1px solid transparent;border-radius:8px;padding:5px 6px;background:transparent;color:var(--text);width:100%}
   .hcard input:focus,.fcard input:focus,.erow input:focus{border-color:var(--main);background:#fff;outline:none}
   .hcard .hn{font-size:16px;font-weight:700}
   .hcard .hs,.fcard .fs{font-size:13px;color:var(--sub)}
   .pr{display:flex;align-items:center;gap:6px;margin-top:6px}
+  .pr input{font-size:17px;font-weight:700;color:var(--main);text-align:right;max-width:150px;margin-left:auto}
   .pr input{font-size:17px;font-weight:700;color:var(--main2);text-align:right;max-width:150px;margin-left:auto}
   .pr span{font-size:13px;color:var(--sub);white-space:nowrap}
   .ftop{display:flex;gap:6px;align-items:center}
+  .ftop .fl{max-width:84px;font-size:12px;font-weight:700;color:var(--main);background:var(--soft);text-align:center;border-radius:999px}
   .ftop .fl{max-width:84px;font-size:12px;font-weight:700;color:var(--main2);background:var(--soft);text-align:center;border-radius:999px}
   .ftop .fn{font-size:14px;font-weight:600}
   .fcard .fr{font-size:16px;font-weight:700;margin:4px 0}
   .ftime{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:4px;margin:2px 0 4px}
-  .ftime input{font-size:24px;font-weight:800;text-align:center;letter-spacing:-.02em}
-  .ftime .mid{font-size:12px;color:var(--sub);text-align:center}
-  .ftime .mid input{font-size:12px;font-weight:400;color:var(--sub);width:92px}
-  .frow{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+@@ -84,8 +84,8 @@
 
-  /* 기타 비용 (사람별) */
-  .erow{display:grid;grid-template-columns:1fr 1fr auto;gap:6px 8px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:8px;background:#fffdfb}
-  .erow .en{grid-column:1 / 3;font-weight:600;font-size:14px}
-  .erow label{display:flex;align-items:center;gap:6px;background:var(--soft);border-radius:10px;padding:4px 8px}
-  .erow label span{font-size:12px;font-weight:700;color:var(--main2);white-space:nowrap;max-width:60px;overflow:hidden;text-overflow:ellipsis}
-  .erow label input{text-align:right;font-weight:700;color:var(--main2);background:transparent;padding:5px 2px}
-  .erow button{grid-column:3;grid-row:1;border:none;background:transparent;color:#c2b8ae;cursor:pointer;padding:6px;border-radius:7px}
+  /* 기타 비용 */
+  .erow{display:grid;grid-template-columns:1fr 110px auto;gap:6px;align-items:center;margin-bottom:6px}
+  .erow input[type=number]{text-align:right;font-weight:600;color:var(--main)}
+  .erow button{border:none;background:transparent;color:#b3b8c4;cursor:pointer;padding:6px;border-radius:7px}
+  .erow input[data-ef=price]{text-align:right;font-weight:600;color:var(--main2)}
+  .erow button{border:none;background:transparent;color:#c2b8ae;cursor:pointer;padding:6px;border-radius:7px}
   .erow button:hover{color:var(--danger);background:#fff0f0}
 
   /* 예산 */
-  .bar{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--line);margin-bottom:10px}
-  .bar i{display:block;height:100%}
-  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--sub);margin-bottom:10px}
+@@ -95,8 +95,8 @@
   .legend b{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
   .sum{background:var(--soft);border-radius:14px;padding:14px;display:grid;gap:8px}
   .sum div{display:flex;justify-content:space-between;font-size:14px}
-  .sum .sub{font-size:13px;color:var(--sub);padding-left:10px}
+  .sum .tot{font-weight:700;border-top:1px solid #d5dcf7;padding-top:8px}
+  .sum .big{font-size:19px;font-weight:800;color:var(--main)}
   .sum .tot{font-weight:700;border-top:1px solid #f3dcc2;padding-top:8px}
-  .sum .pp{font-size:17px;font-weight:800;color:var(--main2)}
-  .sum .ppd{font-size:12px;color:var(--sub);margin-top:-4px;justify-content:flex-end}
+  .sum .big{font-size:19px;font-weight:800;color:var(--main2)}
   .hint{font-size:12px;color:var(--sub);margin-top:8px;line-height:1.5}
 
   /* 환율 계산기 */
-  .calc{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
-  .calc input{border:1px solid var(--line);border-radius:12px;padding:10px;font-size:16px;font-weight:700;width:100%;text-align:right}
-  .calc input:focus{outline:none;border-color:var(--main)}
-  .calc span{font-size:13px;color:var(--sub)}
-
-  textarea{width:100%;min-height:100px;border:1px solid var(--line);border-radius:12px;padding:10px;font-size:14px;background:#fff;color:var(--text);resize:vertical;line-height:1.5}
+@@ -109,10 +109,10 @@
   textarea:focus{outline:none;border-color:var(--main)}
   .tools{display:flex;gap:8px;flex-wrap:wrap}
   .tools button{flex:1;min-width:110px;padding:11px;border:1px solid var(--line);background:#fff;border-radius:12px;cursor:pointer;font-size:13px;color:var(--text)}
+  .tools button:hover{background:var(--soft);border-color:var(--main);color:var(--main)}
   .tools button:hover{background:var(--soft);border-color:var(--main);color:var(--main2)}
   .tools .primary{background:var(--main);color:#fff;border-color:var(--main)}
   .tools .primary:hover{background:var(--main2);color:#fff}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1d2230;color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:9}
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#2a2420;color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:9}
   .toast.show{opacity:1}
 </style>
 </head>
-<body>
-<div class="wrap">
-  <div class="hero">
-    <div class="toprow">
-      <span class="eyebrow">MATSUYAMA · JAPAN</span>
-      <span class="dday" id="dday"></span>
-    </div>
-    <h1>마쓰야마 여행 계획</h1>
-    <div class="date">2026.11.21 (토) ~ 11.24 (화) · 3박 4일</div>
-    <div class="members" id="members"></div>
-    <button class="rate" id="rate" title="누르면 새로고침">환율 불러오는 중…</button>
-  </div>
-
-  <div class="tabs" id="tabs"></div>
-  <div id="day"></div>
-
+@@ -135,7 +135,7 @@
   <div class="card">
     <h3>항공편</h3>
     <div id="flights"></div>
+    <div class="pr"><span>항공 요금 (2인 왕복 합계)</span><input type="number" id="flightPrice" inputmode="numeric"><span>원</span></div>
     <div class="pr"><span>항공 요금 (2인 왕복 합계)</span><input type="text" id="flightPrice" inputmode="numeric"><span>원</span></div>
   </div>
 
   <div class="card">
-    <h3>숙소</h3>
-    <div id="hotels"></div>
-  </div>
-
-  <div class="card">
-    <h3>기타 비용 <small>식비, 교통, 쇼핑 등 · 사람별로 입력</small></h3>
-    <div id="extras"></div>
-    <button class="add" id="addExtra">+ 항목 추가</button>
-  </div>
-
-  <div class="card">
+@@ -153,9 +153,9 @@
     <h3>예산 요약</h3>
     <div class="bar" id="bar"></div>
     <div class="legend">
+      <span><b style="background:#3b5bdb"></b>항공</span>
+      <span><b style="background:#74c0fc"></b>숙소</span>
+      <span><b style="background:#ffa94d"></b>기타</span>
       <span><b style="background:#ee9a50"></b>항공</span>
       <span><b style="background:#f6ad6b"></b>숙소</span>
       <span><b style="background:#fbd9b5"></b>기타</span>
     </div>
-    <div class="sum" id="sum"></div>
-    <div class="hint">항공과 숙소는 공동 비용이라 인원수대로 똑같이 나누고, 기타 비용은 각자 입력한 금액만 더해요. 위 이름표를 바꾸면 이름도 같이 바뀌어요. 도고칸은 USD 결제라 카드 환율에 따라 조금 달라질 수 있어요.</div>
-  </div>
-
+    <div class="sum">
+      <div><span>항공</span><b id="sumFlight"></b></div>
+@@ -170,7 +170,7 @@
   <div class="card">
     <h3>환율 계산기</h3>
     <div class="calc">
+      <input type="number" id="calcJpy" inputmode="numeric" placeholder="엔">
       <input type="text" id="calcJpy" inputmode="numeric" placeholder="엔">
       <span>엔 =</span>
       <input type="text" id="calcKrw" readonly placeholder="원">
     </div>
-    <div class="hint">위쪽에 표시된 현재 환율 기준이에요.</div>
-  </div>
+@@ -201,6 +201,16 @@
+const uid = () => Math.random().toString(36).slice(2, 9);
+const I = (text, time = "", memo = "") => ({ id: uid(), time, text, memo, done: false });
+const fmt = n => Number(n || 0).toLocaleString("ko-KR");
+function commaInput(el){
+  const pos = el.selectionStart;
+  const before = el.value.slice(0,pos).replace(/\D/g,"").length;
+  const digits = el.value.replace(/\D/g,"");
+  el.value = digits ? Number(digits).toLocaleString("ko-KR") : "";
+  let c = 0, p = 0;
+  while (p < el.value.length && c < before) { if (/\d/.test(el.value[p])) c++; p++; }
+  try { el.setSelectionRange(p,p); } catch(e){}
+  return Number(digits) || 0;
+}
 
-  <div class="card">
-    <h3>공통 메모</h3>
-    <textarea id="notes" placeholder="준비물, 예약, 가고 싶은 곳 등 자유롭게 적어요"></textarea>
-  </div>
+const DEFAULT = () => ({
+  notes: "",
+@@ -422,13 +432,13 @@
+      </div>
+      <input class="fs" data-ff="memo" value="${esc(f.memo)}" placeholder="메모">
+    </div>`).join("");
+  $("flightPrice").value = state.flightPrice;
+  $("flightPrice").value = fmt(state.flightPrice);
+}
+$("flights").addEventListener("input", e => {
+  const f = e.target.dataset.ff; if (!f) return;
+  state.flights[+e.target.closest(".fcard").dataset.fi][f] = e.target.value; save();
+});
+$("flightPrice").addEventListener("input", e => { state.flightPrice = +e.target.value || 0; save(); updateSum(); });
+$("flightPrice").addEventListener("input", e => { state.flightPrice = commaInput(e.target); save(); updateSum(); });
 
-  <div class="card">
-    <h3>공유 · 백업</h3>
-    <div class="tools">
-      <button class="primary" id="copyLink">공유 링크 복사</button>
-      <button id="exportBtn">JSON 내보내기</button>
-      <button id="importBtn">JSON 불러오기</button>
-      <button id="resetBtn">처음으로 초기화</button>
-    </div>
-    <div class="hint">내 수정 내용은 이 브라우저에 자동 저장돼요. 친구에게 바뀐 내용을 보여주려면 "공유 링크 복사"로 만든 링크를
+/* 숙소 */
+function renderHotels(){
+@@ -438,13 +448,13 @@
+      <input class="hs" data-hf="period" value="${esc(h.period)}">
+      <input class="hs" data-hf="room" value="${esc(h.room)}">
+      <input class="hs" data-hf="memo" value="${esc(h.memo)}" placeholder="메모">
+      <div class="pr"><span>숙박 요금</span><input type="number" data-hf="price" value="${h.price}" inputmode="numeric"><span>원</span></div>
+      <div class="pr"><span>숙박 요금</span><input type="text" data-hf="price" value="${fmt(h.price)}" inputmode="numeric"><span>원</span></div>
+    </div>`).join("");
+}
+$("hotels").addEventListener("input", e => {
+  const f = e.target.dataset.hf; if (!f) return;
+  const i = +e.target.closest(".hcard").dataset.h;
+  state.hotels[i][f] = f === "price" ? (+e.target.value || 0) : e.target.value;
+  state.hotels[i][f] = f === "price" ? commaInput(e.target) : e.target.value;
+  save(); updateSum();
+});
+
+@@ -453,14 +463,14 @@
+  $("extras").innerHTML = state.extras.length ? state.extras.map((x,i) => `
+    <div class="erow" data-e="${i}">
+      <input type="text" data-ef="name" value="${esc(x.name)}" placeholder="항목 (예: 교통비)">
+      <input type="number" data-ef="price" value="${x.price || ""}" inputmode="numeric" placeholder="금액">
+      <input type="text" data-ef="price" value="${x.price ? fmt(x.price) : ""}" inputmode="numeric" placeholder="금액">
+      <button data-edel="${i}" title="삭제">✕</button>
+    </div>`).join("") : `<div class="hint" style="margin:0 0 8px">아직 항목이 없어요. 식비, 교통, 쇼핑 예산을 추가해 보세요.</div>`;
+}
+$("extras").addEventListener("input", e => {
+  const f = e.target.dataset.ef; if (!f) return;
+  const i = +e.target.closest(".erow").dataset.e;
+  state.extras[i][f] = f === "price" ? (+e.target.value || 0) : e.target.value;
+  state.extras[i][f] = f === "price" ? commaInput(e.target) : e.target.value;
+  save(); updateSum();
+});
+$("extras").addEventListener("click", e => {
+@@ -483,7 +493,7 @@
+  $("perLabel").textContent = `1인당 (${n}명 기준)`;
+  $("sumPer").textContent = fmt(Math.round(total / n)) + "원";
+  const p = v => total ? (v / total * 100) : 0;
+  $("bar").innerHTML = `<i style="width:${p(flight)}%;background:#3b5bdb"></i><i style="width:${p(hotel)}%;background:#74c0fc"></i><i style="width:${p(extra)}%;background:#ffa94d"></i>`;
+  $("bar").innerHTML = `<i style="width:${p(flight)}%;background:#ee9a50"></i><i style="width:${p(hotel)}%;background:#f6ad6b"></i><i style="width:${p(extra)}%;background:#fbd9b5"></i>`;
+}
+
+/* 메모·공유 */
+@@ -517,42 +527,42 @@
+const RATE_KEY = "jpy-krw-rate";
+const rateEl = $("rate");
+function calc(){
+  const v = +$("calcJpy").value || 0;
+  const v = Number($("calcJpy").value.replace(/\D/g,"")) || 0;
+  $("calcKrw").value = jpyRate && v ? fmt(Math.round(v * jpyRate)) + "원" : "";
+}
+$("calcJpy").addEventListener("input", calc);
+$("calcJpy").addEventListener("input", e => { commaInput(e.target); calc(); });
+function showRate(r, label){
+  jpyRate = r;
+  rateEl.innerHTML = `<span>100엔 = <b>${(r*100).toFixed(1)}원</b></span><small>${label}</small>`;
+  rateEl.innerHTML = `<span>100엔 = <b>${(r*100).toLocaleString("ko-KR",{minimumFractionDigits:1,maximumFractionDigits:1})}원</b></span><small>${label}</small>`;
+  calc();
+}
+async function loadRate(){
+  try {
+    const c = JSON.parse(localStorage.getItem(RATE_KEY) || "null");
+    if (c) showRate(c.rate, c.label + " (저장값)");
+  } catch(e){}
+  const sources = [
+    ["https://open.er-api.com/v6/latest/JPY", j => j.rates.KRW],
+    ["https://api.frankfurter.app/latest?from=JPY&to=KRW", j => j.rates.KRW]
+  ];
+  for (const [url, pick] of sources) {
+    try {
+      const res = await fetch(url);
+      const r = pick(await res.json());
+      if (!r) continue;
+      const now = new Date();
+      const label = `${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")} 기준`;
+      showRate(r, label);
+      try { localStorage.setItem(RATE_KEY, JSON.stringify({rate:r, label})); } catch(e){}
+      return;
+    } catch(e){}
+  }
+  if (!rateEl.querySelector("b")) rateEl.innerHTML = "<span>환율을 못 불러왔어요</span><small>눌러서 다시 시도</small>";
+}
+rateEl.onclick = () => { rateEl.textContent = "불러오는 중…"; loadRate(); };
+
+render();
+loadRate();
+</script>
+</body>
+</html>
